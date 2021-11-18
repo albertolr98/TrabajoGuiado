@@ -1,71 +1,148 @@
 <root>
   <World>
 	<!-- Los alumnos deben poner el número entero de su número de matrícula a continuación -->
-    <WorldInfo name="Guiado y Navegacion. MUAR. UPM 2018">
+    <WorldInfo name="Guiado y Navegacion. MUAR. UPM 2021">
 		<RegisterNumber number="21170"/> <!-- numero de matricula Alberto-->
-		<RegisterNumber number="21171"/> <!-- numero de matricula Guille-->
-		<RegisterNumber number="21172"/> <!-- numero de matricula Pablo-->
+		<RegisterNumber number="21059"/> <!-- numero de matricula Guille-->
+		<RegisterNumber number="21202"/> <!-- numero de matricula Pablo-->
 	</WorldInfo>
 	<!-- definición de una habitación como un conjunto de paredes -->
-<FaceSetPart name="Face Set" id="0">
+<FaceSetPart name="Casa de Alberto">
 	<face>
 		<vertex>
-			{4.000000 , -3.000000, 0}
-			{4.000000 , 4.000000, 0}
-			{-4.000000 , 4.000000, 0}
-			{-4.000000 , -3.000000, 0}
+			{0.000000 , 0.000000, 0}
+			{8.000000 , 0.000000, 0}
+			{8.000000 , 19.400000, 0}
+			{0.000000 , 19.400000, 0}
 		</vertex>
 		<colour r="0.2" g="0.2" b="1"/>
 	</face>
 	<face>
 		<vertex>
 			{0.000000 , 0.000000, 0}
+			{19.400000 , 0.000000, 0}
+			{19.400000 , 2.000000, 0}
 			{0.000000 , 2.000000, 0}
-			{7.000000 , 2.000000, 0}
-			{7.000000 , 0.000000, 0}
 		</vertex>
 		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
-		<position>{4.000000 , -3.000000, 0}</position>
+		<position>{8.000000 , 0.000000, 0}</position>
 		<colour r="0.2" g="0.2" b="0.8"/>
 	</face>
-	<face>
+        <face>
 		<vertex>
 			{0.000000 , 0.000000, 0}
+			{-8.000000 , 0.000000, 0}
+			{-8.000000 , 2.000000, 0}
 			{0.000000 , 2.000000, 0}
-			{8.000000 , 2.000000, 0}
-			{8.000000 , 0.000000, 0}
 		</vertex>
 		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
-		<position>{4.000000 , 4.000000, 0}</position>
+		<position>{0.000000 , 19.400000, 0}</position>
 		<colour r="0.2" g="0.2" b="0.8"/>
 	</face>
-	<face>
+        <face>
 		<vertex>
 			{0.000000 , 0.000000, 0}
+			{19.400000 , 0.000000, 0}
+			{19.400000 , 2.000000, 0}
 			{0.000000 , 2.000000, 0}
-			{7.000000 , 2.000000, 0}
-			{7.000000 , 0.000000, 0}
 		</vertex>
-		<orientation>{1.570796 , 0.000000, -1.570796}</orientation>
-		<position>{-4.000000 , 4.000000, 0}</position>
+		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
+		<position>{0.000000 , 0.000000, 0}</position>
 		<colour r="0.2" g="0.2" b="0.8"/>
 	</face>
-	<face>
+        <face>
 		<vertex>
 			{0.000000 , 0.000000, 0}
+			{-8.000000 , 0.000000, 0}
+			{-8.000000 , 2.000000, 0}
 			{0.000000 , 2.000000, 0}
-			{8.000000 , 2.000000, 0}
-			{8.000000 , 0.000000, 0}
 		</vertex>
-		<orientation>{1.570796 , 0.000000, 0.000000}</orientation>
-		<position>{-4.000000 , -3.000000, 0}</position>
+		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
+		<position>{0.000000 , 0.000000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{-6.000000 , 0.000000, 0}
+			{-6.000000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
+		<position>{2.000000 , 4.600000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{-6.000000 , 0.000000, 0}
+			{-6.000000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
+		<position>{2.000000 , 6.800000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{0.400000 , 0.000000, 0}
+			{0.400000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
+		<position>{2.000000 , 4.600000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{-6.600000 , 0.000000, 0}
+			{-6.600000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
+		<position>{1.400000 , 10.000000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{-6.600000 , 0.000000, 0}
+			{-6.600000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
+		<position>{1.400000 , 14.600000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{3.200000 , 0.000000, 0}
+			{3.200000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
+		<position>{2.000000 , 0.000000, 0}</position>
+		<colour r="0.2" g="0.2" b="0.8"/>
+	</face>
+        <face>
+		<vertex>
+			{0.000000 , 0.000000, 0}
+			{2.200000 , 0.000000, 0}
+			{2.200000 , 2.000000, 0}
+			{0.000000 , 2.000000, 0}
+		</vertex>
+		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
+		<position>{2.000000 , 6.400000, 0}</position>
 		<colour r="0.2" g="0.2" b="0.8"/>
 	</face>
 </FaceSetPart>
 <!-- definición de un robot Pioner3at , posicion y orientación inicial-->
     <Pioneer3ATSim name="Marvin">
       <orientation>	{0,0,0} </orientation>
-      <position>	{0,0,0}	</position>
+      <position>	{5,7.5,0}	</position>
     </Pioneer3ATSim>
 <!-- definición de un laser unido al robot , posicion y orientación relativa-->	
     <LMS100Sim name="LMS100" linkTo="$Marvin$">
