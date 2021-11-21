@@ -1,56 +1,70 @@
 classdef robot
-    %ROBOT([x y], beta)
+    %ROBOT([x y theta])
     %   Robot móvil que va a ser usado. De momento, va a ser solo un
     %   conjunto de sensores unidos a un cuerpo central :). No sé cómo se
     %   podrá simular el movimiento aquí, de momento.
     
     properties
         sensores
-        x
-        y
-        beta
+        X % [x; y; theta]
     end
     
     methods
-        function obj = robot(P, beta)
-            %ROBOT([x y], beta)
+        function obj = robot(X)
+            %ROBOT([x y theta])
             %   Constructor del robot, en una posición [x y], girado un
-            %   ángulo beta
+            %   ángulo theta.
+            
+            if isrow(X)
+                X = X';
+            end
+            
+            X(3) = mod(X(3), 2*pi); 
+            
             obj.sensores = [];
-            obj.x = P(1);
-            obj.y = P(2);
-            obj.beta = beta;
+            
+            obj.X = X;
         end
         
-        function obj = add_us(obj, P, beta_us)
-            %ADD_US(obj, [x_us y_us], beta_us)
-            %   Añade un sensor ultrasonido con unas posiciones [z_us y_us]
+        function obj = add_us(obj, X_rel)
+            %ADD_US(obj, [x_rel y_rel theta_rel])
+            %   Añade un sensor ultrasonido con unas posiciones [x_rel y_rel]
             %   respecto al centro del robot, apuntando en un ángulo
-            %   beta_us.
-            obj.sensores = [obj.sensores sensor_us(P, beta_us)];
+            %   theta_rel.
+            obj.sensores = [obj.sensores sensor_us(X_rel)];
+            obj.sensores(end) = actualizar_posicion(obj.sensores(end), obj.X);
         end
         
         function plot_robot(obj)
         	%PLOT_ROBOT(obj) 
             %   Dibuja el robot y sus sensores. 
             hold on
-            x2 = obj.x + 100*cos(obj.beta);
-            y2 = obj.y + 100*sin(obj.beta);
-            plot(obj.x, obj.y, 'hk', 'MarkerSize', 20);
-            plot([obj.x x2], [obj.y y2], '-g');
+            x = obj.X(1);
+            y = obj.X(2);
+            theta = obj.X(3);
+            x2 = x + 100*cos(theta);
+            y2 = y + 100*sin(theta);
+            plot(x, y, 'hk', 'MarkerSize', 20);
+            plot([x x2], [y y2], '-g');
             
             for i = 1:length(obj.sensores)
-                plot_us(obj.sensores(i), [obj.x obj.y], obj.beta);
+                plot_us(obj.sensores(i));
             end
             hold off
         end
-        
-        function plot_haz(obj, n)
-            %PLOT_ROBOT(obj, n) 
-            %   Dibuja  el haz de sonido que dispara el sensor n.
-            hold on
-            plot_haz(obj.sensores(n), [obj.x obj.y], obj.beta);
-            hold off
+
+        %% Estimación de medidas y Jacobiano
+        function [z, H] = estimar_medidas(obj, entorno)
+            %[z, H] = ESTIMAR_MEDIDAS(obj, entorno)
+            %   Devuelve la z estimada de todos los sensores, así como el
+            %   jacobiano de estas medidas (H).
+            z = zeros(length(obj.sensores), 1);
+            H = zeros(length(obj.sensores), 3);
+            for i = 1:length(obj.sensores)
+                [new_z, new_H] = estimar_medidas(obj.sensores(i), entorno, obj);
+                z(i) = new_z;
+                H(i,:) = new_H;
+            end
         end
     end
 end
