@@ -38,14 +38,17 @@ classdef robot
         function plot_robot(obj)
         	%PLOT_ROBOT(obj) 
             %   Dibuja el robot y sus sensores. 
-            hold on
+            
             x = obj.X(1);
             y = obj.X(2);
             theta = obj.X(3);
-            x2 = x + 100*cos(theta);
+            
+            x2 = x + 100*cos(theta); % para ver cuál es la parte delantera
             y2 = y + 100*sin(theta);
-            plot(x, y, 'hk', 'MarkerSize', 20);
-            plot([x x2], [y y2], '-g');
+            
+            hold on
+            plot(x, y, 'hk', 'MarkerSize', 20); % robot
+            plot([x x2], [y y2], '-g'); % dirección de mirada
             
             for i = 1:length(obj.sensores)
                 plot_us(obj.sensores(i));
@@ -60,6 +63,7 @@ classdef robot
             %   jacobiano de estas medidas (H).
             z = zeros(length(obj.sensores), 1);
             H = zeros(length(obj.sensores), 3);
+            
             for i = 1:length(obj.sensores)
                 [new_z, new_H] = estimar_medidas(obj.sensores(i), entorno, obj);
                 z(i) = new_z;

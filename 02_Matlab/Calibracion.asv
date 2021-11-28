@@ -6,7 +6,7 @@ format shortG
 N_medidas = 100;
 N_sensores = 3;
 
-apoloPlaceMRobot('Marvin',[4 2 0],-pi/2,'World 1');
+apoloPlaceMRobot('Marvin',[1 1 0],-pi/2,'World 1');
 apoloUpdate();
 
 %% Ultrasonidos (sin moverse)
@@ -33,7 +33,7 @@ odometria = zeros(N_medidas, 3);
 for i = 1:N_medidas
     apoloResetOdometry('Marvin', [0 0 0],'World 1');
 
-    apoloMoveMRobot('Marvin',[-0.2 0.1], 0.05, 'World 1');
+    apoloMoveMRobot('Marvin',[0.2 0.1], 0.05, 'World 1');
     apoloUpdate();
     
     odometria_next = apoloGetOdometry('Marvin','World 1');

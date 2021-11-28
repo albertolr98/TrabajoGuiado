@@ -40,10 +40,11 @@ classdef sensor_us
             %PLOT_US(obj)
             %   Dibuja el sensor de ultrasonidos, dada la posición del
             %   robot y su ángulo. 
+            x2 = obj.X_abs(1) + 200*cos(obj.X_abs(3)); % para ver a dónde apunta
+            y2 = obj.X_abs(2) + 200*sin(obj.X_abs(3));
+            
             hold on
             plot(obj.X_abs(1), obj.X_abs(2), '*r', 'MarkerSize', 10);
-            x2 = obj.X_abs(1) + 200*cos(obj.X_abs(3));
-            y2 = obj.X_abs(2) + 200*sin(obj.X_abs(3));
             plot([obj.X_abs(1) x2], [obj.X_abs(2) y2], '--r');
             hold off
         end 
