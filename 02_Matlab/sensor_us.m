@@ -29,7 +29,7 @@ classdef sensor_us
             
             M = [cos(theta) -sin(theta)  0;
                  sin(theta) cos(theta)   0;
-                 0          0            1];
+                 0          0            1]; % matriz de rotación
             
             obj.X_abs = M*obj.X_rel + X;
             obj.X_abs(3) = mod(obj.X_abs(3), 2*pi);

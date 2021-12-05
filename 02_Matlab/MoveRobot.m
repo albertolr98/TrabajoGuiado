@@ -13,9 +13,11 @@ function  MoveRobot(next_position,velocidad, tolerancia)
 % 3. Avanzamos hasta el objetivo
 % 4. Giramos para adoptar el ángulo deseado
 % 5. Celebramos.
-    
-    robot = 'Marvin';
-    time_unit = 0.01;
+
+global time_unit % ahora es una variable global; no olvidar ejecutar el script variables globales
+
+    robot = 'Marvin'; 
+%     time_unit = 0.01;
     
     %Esto pa testear no vale
     apoloPlaceMRobot(robot,[-4,3,0],pi/2)
