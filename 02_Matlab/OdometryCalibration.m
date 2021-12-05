@@ -22,7 +22,7 @@
 robot = 'Marvin';
 position = [-10,10];
 angle = pi/2;
-n = 1000;
+n = 500;
 
 
 %posicionamos Marvin en el origen
@@ -41,8 +41,9 @@ loc=apoloGetLocationMRobot(robot);
 straight_odom=[pos];
 straight_loc=[loc];
 
+
 for i = 1:n
-    apoloMoveMRobot(robot, [0.05, 0.1], 0.1); 
+    apoloMoveMRobot(robot, [0.1, 0.1], 0.05); 
     apoloUpdate() 
     
     a=apoloGetOdometry(robot); 
@@ -70,6 +71,5 @@ figure('Name','Error');
 subplot(1,3,1); plot(2:n,error(3:end,1)); title('X Error'); %Error X
 subplot(1,3,2); plot(2:n,error(3:end,2)); title('Y Error'); %Error Y no tiene error porque no gira 
 subplot(1,3,3); plot(2:n,error(3:end,3)); title('Angle Error'); %Error angle es un caos porque alterna entre 0 y 2pi
-
 
 %end
