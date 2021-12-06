@@ -1,3 +1,6 @@
+close all
+clear all
+
 % Definimos una trayectoria circular
 velocidadL = 0.2;  % Velocidad lineal 0.2 m/seg
 timestep = 0.5;  % Actualizacion de sensores
@@ -50,9 +53,9 @@ for l = 1:length(trayectoriaD)
     XrealkAUX = Xrealk;
     
     % Avance real del robot
-    Xrealk(1) = XrealkAUX(1) + trayectoriaD(l)*cos(XrealkAUX(3)+(trayectoriaB(l)/2));
-    Xrealk(2) = XrealkAUX(2) + trayectoriaD(l)*sin(XrealkAUX(3)+(trayectoriaB(l)/2));
-    Xrealk(3) = XrealkAUX(3) + trayectoriaB(l);
+    Xrealk(1) = XrealkAUX(1) + trayectoriaD(l)*cos(XrealkAUX(3)+(trayectoriaB(l)/2)); % x
+    Xrealk(2) = XrealkAUX(2) + trayectoriaD(l)*sin(XrealkAUX(3)+(trayectoriaB(l)/2)); % y
+    Xrealk(3) = XrealkAUX(3) + trayectoriaB(l); % theta
     Xreal(:,l) = Xrealk;  % Para mantener una historia del recorrido
 
     % Observacion de las balizas
@@ -170,7 +173,3 @@ axis([0 12 0 9])
 plot(Pacumulado(3,:),'b');
 xlabel ('t (muestras)')
 ylabel ('Varianza \theta (rad2)')
-
-pause
-close all
-clear all
