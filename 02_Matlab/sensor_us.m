@@ -5,6 +5,7 @@ classdef sensor_us
     properties
         X_rel % X relativas al robot
         X_abs % X absolutas
+        angulo_cono
     end
     
     methods
@@ -20,6 +21,8 @@ classdef sensor_us
             obj.X_rel = X_rel;
             obj.X_rel(3) = wrapToPi(obj.X_rel(3));
             obj.X_abs = zeros(3,1);
+            
+            obj.angulo_cono = 0.25;
         end
         
         function obj = actualizar_posicion(obj, X)
@@ -41,105 +44,215 @@ classdef sensor_us
             %PLOT_US(obj)
             %   Dibuja el sensor de ultrasonidos, dada la posición del
             %   robot y su ángulo. 
-            x2 = obj.X_abs(1) + 20*cos(obj.X_abs(3)); % para ver a dónde apunta
-            y2 = obj.X_abs(2) + 20*sin(obj.X_abs(3));
+            
+            x1 = obj.X_abs(1) + 20*cos(obj.X_abs(3) + obj.angulo_cono);
+            y1 = obj.X_abs(2) + 20*sin(obj.X_abs(3) + obj.angulo_cono);
+            
+            x2 = obj.X_abs(1) + 20*cos(obj.X_abs(3) - obj.angulo_cono);
+            y2 = obj.X_abs(2) + 20*sin(obj.X_abs(3) - obj.angulo_cono);
+            
             
             hold on
             plot(obj.X_abs(1), obj.X_abs(2), '*r', 'MarkerSize', 10);
+            plot([obj.X_abs(1) x1], [obj.X_abs(2) y1], '--r');
             plot([obj.X_abs(1) x2], [obj.X_abs(2) y2], '--r');
             hold off
         end 
         
         %% Estimación de medidas y Jacobiano
-        function [z, H] = estimar_medidas(obj, entorno, robot)
-            %[z, H] = ESTIMAR_MEDIDAS(obj, entorno, robot)
+        function [z, H, X_m] = estimar_medidas(obj, entorno)
+            %[z, H, X_m] = ESTIMAR_MEDIDAS(obj, entorno, robot)
             %   Devuelve la z estimada del sensor (z), así como el
-            %   jacobiano de esta (H).
+            %   jacobiano de esta (H). Devuelve también las coordenadas del 
+            %   punto X_m, para poder ponerlo en una imagen, o donde sea.
             p = entorno.paredes;
+            
             x_abs = obj.X_abs(1);
             y_abs = obj.X_abs(2);
-            theta_abs = obj.X_abs(3);
-            
-            % medidas
-            z = inf; % la distancia usada es la menor de todas las distancias
-            idx = 0; % índice de la pared que se mide
-            
-            for i = 1:length(p)
-                if p(i).tipo == 'h' % pared horizontal
-                    y_p = p(i).X1(2);
-                    % X corte con la pared
-                    x_p = x_abs + 1/tan(theta_abs)*(y_p - y_abs);
-
-                    if ~esta_en_pared(p(i), [x_p; y_p])
-                        continue;
-                    elseif sign(y_p - y_abs) ~= sign(sin(theta_abs))
-                        continue
-                    else
-                        new_z = (y_p - y_abs)/sin(theta_abs);
-                        if new_z < z
-                            z = new_z;
-                            idx = i;
-                        end
-                    end
-                elseif p(i).tipo == 'v' % pared vertical
-                    x_p = p(i).X1(1);
-                    % Y corte con la pared
-                    y_p = y_abs + tan(theta_abs)*(x_p - x_abs);
-
-                    if ~esta_en_pared(p(i), [x_p; y_p])
-                        continue;
-                    elseif sign(x_p - x_abs) ~= sign(cos(theta_abs))
-                        continue
-                    else
-                        new_z = (x_p - x_abs)/cos(theta_abs);
-                        if new_z < z
-                            z = new_z;
-                            idx = i;
-                        end
-                    end
-                end
-            end
-            
-            H = jacobiano(obj, p(idx), robot);
-        end
-        
-        function H = jacobiano(obj, pared, robot)
-            %H = JACOBIANO(obj, pared, robot)
-            %   Calcula la matriz jacobiana de la medida del sensor
-            %   respecto a la pared. La pared debe ser la pared respecto a
-            %   la que se mide, como es lógico.
             theta_abs = obj.X_abs(3);
             
             x_rel = obj.X_rel(1);
             y_rel = obj.X_rel(2);
             theta_rel = obj.X_rel(3);
             
-            if pared.tipo == 'h' % horizontal
-                y_p = pared.X1(2);
-                y = robot.X(2);
+            delta = obj.angulo_cono;
+            
+            % medidas
+            z = inf; % la distancia usada es la menor de todas las distancias
+            X_m = [0 0];
+            
+            for i = 1:length(p)
                 
-                % derivadas parciales dh respecto a...
-                dx = 0;
-                dy = -1/sin(theta_abs);
-                dtheta = 1/sin(theta_abs)^2*(-x_rel*sin(theta_rel) + ...
-                    y_rel*cos(theta_rel) + (y - y_p)*cos(theta_abs));
-                % la derivada complicada la ha hecho WolframAlpha
-            elseif pared.tipo == 'v' % vertical
-                x_p = pared.X1(1);
-                x = robot.X(1);
+                if i == 8
+                   'ain' 
+                end
                 
-                % derivadas parciales dh respecto a...
-                dx = -1/cos(theta_abs);
-                dy = 0;
-                dtheta = 1/cos(theta_abs)^2*(-x_rel*sin(theta_rel) + ...
-                    y_rel*cos(theta_rel) - (x - x_p)*sin(theta_abs));
-                % la derivada complicada la ha hecho WolframAlpha
+                if p(i).tipo == 'h' 
+                    %% pared horizontal  
+                    % ángulo extremo del cono 1
+                    [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs theta_abs+delta], p(i));
+                    if new_z < z
+                        z = new_z;
+                        X_m = new_X_m;
+                        
+                        % Jacobiano
+                        dx = 0;
+                        dy = -1/sin(theta_abs + delta);
+                        dtheta = 1/sin(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
+                            y_rel*cos(theta_rel + delta) + (y_abs - X_m(2))*cos(theta_abs + delta));
+                        
+                        H = [dx dy dtheta];
+                    end
+                    
+                    % ángulo extremo del cono 2
+                    [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs theta_abs-delta], p(i));
+                    if new_z < z
+                        z = new_z;
+                        X_m = new_X_m;
+                        
+                        % Jacobiano
+                        dx = 0;
+                        dy = -1/sin(theta_abs - delta);
+                        dtheta = 1/sin(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
+                            y_rel*cos(theta_rel - delta) + (y_abs - X_m(2))*cos(theta_abs - delta));
+                        
+                        H = [dx dy dtheta];
+                    end
+                    
+                    % perpendicular 1
+                    if abs(wrapToPi(theta_abs - pi/2)) < obj.angulo_cono
+                        [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs pi/2], p(i));
+                        if new_z < z
+                            z = new_z;
+                            X_m = new_X_m;
+                            
+                            % Jacobiano
+                            dx = 0;
+                            dy = -1;
+                            dtheta = -(x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
+                            H = [dx dy dtheta];
+                        end
+                    end
+                    
+                    % perpendicular 2
+                    if abs(wrapToPi(theta_abs + pi/2)) < obj.angulo_cono
+                        [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs -pi/2], p(i));
+                        if new_z < z
+                            z = new_z;
+                            X_m = new_X_m;
+
+                            % Jacobiano
+                            dx = 0;
+                            dy = 1;
+                            dtheta = (x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
+                            H = [dx dy dtheta];                            
+                        end
+                    end
+                
+                elseif p(i).tipo == 'v' 
+                    %% pared vertical
+                    % ángulo extremo del cono 1
+                    [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs theta_abs+delta], p(i));
+                    if new_z < z
+                        z = new_z;
+                        X_m = new_X_m;
+                        
+                        % Jacobiano
+                        dx = -1/cos(theta_abs + delta);
+                        dy = 0;
+                        dtheta = 1/cos(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
+                            y_rel*cos(theta_rel + delta) - (x_abs - X_m(1))*sin(theta_abs + delta));
+                        
+                        H = [dx dy dtheta];
+                    end
+                    
+                    % ángulo extremo del cono 2
+                    [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs theta_abs-delta], p(i));
+                    if new_z < z
+                        z = new_z;
+                        X_m = new_X_m;
+                        
+                        % Jacobiano
+                        dx = -1/cos(theta_abs - delta);
+                        dy = 0;
+                        dtheta = 1/cos(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
+                            y_rel*cos(theta_rel - delta) - (x_abs - X_m(1))*sin(theta_abs - delta));
+                        
+                        H = [dx dy dtheta];
+                    end
+                    
+                    % perpendicular 1
+                    if abs(wrapToPi(theta_abs)) < obj.angulo_cono
+                        [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs 0], p(i));
+                        if new_z < z
+                            z = new_z;
+                            X_m = new_X_m;
+                            
+                            % Jacobiano
+                            dx = -1;
+                            dy = 0;
+                            dtheta = -(x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
+                            H = [dx dy dtheta];
+                        end
+                    end
+                    
+                    % perpendicular 2
+                    if abs(wrapToPi(theta_abs - pi)) < obj.angulo_cono
+                        [new_z, new_X_m] = calcular_distancia_haz([x_abs y_abs pi], p(i));
+                        if new_z < z
+                            z = new_z;
+                            X_m = new_X_m;
+                            
+                            % Jacobiano
+                            dx = 1;
+                            dy = 0;
+                            dtheta = (x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
+                            H = [dx dy dtheta];
+                        end
+                    end
+                end
+                %% Para ambos tipos de paredes
+                % extremo de pared 1
+                x_p = p(i).X1(1);
+                y_p = p(i).X1(2);
+                alpha = atan2(y_p - y_abs, x_p - x_abs); %ángulo con extremo con pared
+                if abs(wrapToPi(theta_abs - alpha)) < delta
+                    new_z = norm([x_abs-x_p, y_abs - y_p]);
+                    if new_z < z
+                        z = new_z;
+                        X_m = [x_p y_p];
+                        
+                        % Jacobiano
+                        dx = (x_abs - x_p)/z;
+                        dy = (y_abs - y_p)/z;
+                        dtheta = 1/z*((x_abs - x_p)*(-x_rel*sin(theta_abs) - y_rel*cos(theta_abs)) + ...
+                            (y_abs - y_p)*(x_rel*cos(theta_abs) - y_rel*sin(theta_abs)));
+                        H = [dx dy dtheta];
+
+                    end
+                end
+                    
+                % extremo de pared 2
+                x_p = p(i).X2(1);
+                y_p = p(i).X2(2);
+                alpha = atan2(y_p - y_abs, x_p - x_abs); %ángulo con extremo con pared
+                if abs(wrapToPi(theta_abs - alpha)) < delta
+                    new_z = norm([x_abs-x_p, y_abs - y_p]);
+                    if new_z < z
+                        z = new_z;
+                        X_m = [x_p y_p];
+                        
+                        % Jacobiano
+                        dx = (x_abs - x_p)/z;
+                        dy = (y_abs - y_p)/z;
+                        dtheta = 1/z*((x_abs - x_p)*(-x_rel*sin(theta_abs) - y_rel*cos(theta_abs)) + ...
+                            (y_abs - y_p)*(x_rel*cos(theta_abs) - y_rel*sin(theta_abs)));
+                        H = [dx dy dtheta];
+
+                    end
+                end
             end
-            
-            H = [dx dy dtheta];
         end
-        
-            
     end
 end
 
