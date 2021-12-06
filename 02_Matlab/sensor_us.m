@@ -18,6 +18,7 @@ classdef sensor_us
             end
             
             obj.X_rel = X_rel;
+            obj.X_rel(3) = wrapToPi(obj.X_rel(3));
             obj.X_abs = zeros(3,1);
         end
         
@@ -32,7 +33,7 @@ classdef sensor_us
                  0          0            1]; % matriz de rotación
             
             obj.X_abs = M*obj.X_rel + X;
-            obj.X_abs(3) = mod(obj.X_abs(3), 2*pi);
+            obj.X_abs(3) = wrapToPi(obj.X_abs(3));
         end
         
         
@@ -40,8 +41,8 @@ classdef sensor_us
             %PLOT_US(obj)
             %   Dibuja el sensor de ultrasonidos, dada la posición del
             %   robot y su ángulo. 
-            x2 = obj.X_abs(1) + 200*cos(obj.X_abs(3)); % para ver a dónde apunta
-            y2 = obj.X_abs(2) + 200*sin(obj.X_abs(3));
+            x2 = obj.X_abs(1) + 20*cos(obj.X_abs(3)); % para ver a dónde apunta
+            y2 = obj.X_abs(2) + 20*sin(obj.X_abs(3));
             
             hold on
             plot(obj.X_abs(1), obj.X_abs(2), '*r', 'MarkerSize', 10);

@@ -19,7 +19,7 @@ w = 0.2;
 
 odometria = zeros(N_medidas, 3);
 
-var_odo_teor = Q_pu * [v v*w w]'.^2
+var_odo_teor = Q_pu * [v; v*w; w].^2
 
 for i = 1:N_medidas
     apoloResetOdometry('Marvin', [0 0 0],'World 1');

@@ -19,7 +19,7 @@ classdef robot
                 X = X';
             end
             
-            X(3) = mod(X(3), 2*pi); 
+            X(3) = wrapToPi(X(3)); 
             
             obj.sensores = [];
             
@@ -43,8 +43,8 @@ classdef robot
             y = obj.X(2);
             theta = obj.X(3);
             
-            x2 = x + 100*cos(theta); % para ver cuál es la parte delantera
-            y2 = y + 100*sin(theta);
+            x2 = x + 10*cos(theta); % para ver cuál es la parte delantera
+            y2 = y + 10*sin(theta);
             
             hold on
             plot(x, y, 'hk', 'MarkerSize', 20); % robot
@@ -54,6 +54,24 @@ classdef robot
                 plot_us(obj.sensores(i));
             end
             hold off
+        end
+        
+        function obj = actualizar_posicion(obj, X)
+            %obj = ACTUALIZAR_POSICION(obj, X)
+            % cambia la posición del robot a X
+            
+            if isrow(X)
+                X = X';
+            end
+            
+            X(3) = wrapToPi(X(3)); 
+            
+            obj.X = X;
+            
+            for i = 1:length(obj.sensores)
+                obj.sensores(i) = obj.sensores(i).actualizar_posicion(X);
+            end
+            
         end
 
         %% Estimación de medidas y Jacobiano
