@@ -75,17 +75,21 @@ classdef robot
         end
 
         %% Estimación de medidas y Jacobiano
-        function [z, H] = estimar_medidas(obj, entorno)
-            %[z, H] = ESTIMAR_MEDIDAS(obj, entorno)
+        function [z, H, X_m] = estimar_medidas(obj, entorno)
+            %[z, H, X_m] = ESTIMAR_MEDIDAS(obj, entorno)
             %   Devuelve la z estimada de todos los sensores, así como el
-            %   jacobiano de estas medidas (H).
+            %   jacobiano de estas medidas (H). Devuelve también las 
+            %   coordenadas del punto X_m respecto al que están midiendo la 
+            %   distancia, para poder ponerlo en una imagen, o donde sea.
             z = zeros(length(obj.sensores), 1);
             H = zeros(length(obj.sensores), 3);
+            X_m = zeros(length(obj.sensores), 2);
             
             for i = 1:length(obj.sensores)
-                [new_z, new_H] = estimar_medidas(obj.sensores(i), entorno, obj);
+                [new_z, new_H, new_X_p] = estimar_medidas(obj.sensores(i), entorno);
                 z(i) = new_z;
                 H(i,:) = new_H;
+                X_m(i,:) = [new_X_p(1) new_X_p(2)];
             end
         end
     end
