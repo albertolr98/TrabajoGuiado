@@ -1,4 +1,23 @@
-function [X_k1_k, P_k1_k] = KalmanAdaptado(X_k_k, P_k_k, Q)    
+function [X_k1_k, P_k1_k] = KalmanAdaptado(X_k_k, P_k_k, Q, w_r, w_l, dt)
+
+% 1) Con odometría sacas x(k+1|k), a partir de x(k|k)
+% 2) Sacas z estimado(k+1) a partir de x(k+1|k) (esto ya lo tengo yo programado en el robot ese que cree)
+% 3) Tienes z real (k+1)
+% 4) Haces la resta, sacas nu (innovación en la medida)
+% 5) Con eso, y según se vio en el EKF, se saca x(k+1|k+1)
+
+% PREDICCIÓN (EFK): Con los valores de la v y la ω se calcula la matriz Q(k) (con Q_pu, que se ha obtenido de la calibración) -> Función Matriz_Q ya programada
+
+% A partir de las medidas de la odometría, que se pueden hacer fuera o dentro de la siguiente función, se calcula la posición nueva del robot X(k+1|k),
+% así como la nueva matriz P(k+1|k) -> función GetPositionFromOdometry ya programada
+
+% Calcular la Z estimada. Para ello, se empieza por darle al robot (me refiero al robot de la clase creada de Matlab tan chula) la posición nueva estimada 
+% con la función robot = actualizar_posicion(robot, X(k+1|k)). A continuación, se usa la función [z, H] = estimar_medidas(robot, entorno) para obtener la z estimada
+% y el jacobiano H. Esto ya está programado, pero hay que meterlo al bucle que WILLY tiene que hacer (filtro de Kalman).
+
+% COMPARACIÓN (EFK): Hacer todas las cosas de Kalman, que son 3 líneas de código, es decir, matriz S (usando la matriz R de la calibración que vamos a tener que inventarnos),
+% matriz W y vector de innovación en la medida ν.
+
     %% Definimos una trayectoria circular
     velocidadL = 0.2;  % Velocidad lineal 0.2 m/seg
     timestep = 0.5;  % Actualizacion de sensores
@@ -10,9 +29,13 @@ function [X_k1_k, P_k1_k] = KalmanAdaptado(X_k_k, P_k_k, Q)
     Qd = 0.01*velocidadL*timestep;
     Qb = 0.02*velocidadA*timestep;
     Qk_1 = [Qd 0; 0 Qb];
-    % NEW
+    
+    %% NEW
     load('calibracion_odometria.mat', 'Q_pu');
     %Qk_1 = Matriz_Q(velocidad, Q_pu);
+    
+    trayectoriaLRuido(k) = velocidadL*timestep + sqrt(Qd)*randn;
+    trayectoriaARuido(k) = velocidadA*timestep + sqrt(Qb)*randn;
     
     for k = 1:numerodepasos*2
         trayectoriaD(k) = velocidadL*timestep;
@@ -20,6 +43,7 @@ function [X_k1_k, P_k1_k] = KalmanAdaptado(X_k_k, P_k_k, Q)
         trayectoriaDRuido(k) = velocidadL*timestep + sqrt(Qd)*randn;
         trayectoriaBRuido(k) = velocidadA*timestep + sqrt(Qb)*randn;
     end
+
     
     %% Inicializamos la posicion inicial y su covarianza
     xini = 5;
@@ -74,6 +98,8 @@ function [X_k1_k, P_k1_k] = KalmanAdaptado(X_k_k, P_k_k, Q)
               
         % Para acortar el nombre de la variable
         Uk = [trayectoriaDRuido(l); trayectoriaBRuido(l)]; % [delta lineal; delta angular]
+        
+        % NEW
     
         % Nuevo ciclo, k-1 = k.
         Xk_1 = Xk;
