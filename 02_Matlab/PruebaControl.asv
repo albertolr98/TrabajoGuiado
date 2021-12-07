@@ -1,0 +1,58 @@
+%% Prueba para hacer control como dice Peris
+
+%Variables
+i = 0;
+iteraciones = 10000;
+robot = 'Marvin';
+ref_pos = [ -4,  5 ,  pi;
+            -6,  5 ,  -pi/2;
+            -6,  3 ,  0;
+            -4,  3 ,  pi/2];
+ref_angle = 0;
+start_pos = [-4, 3, pi];
+%%Posicionamos a tito marvin para las pruebas
+    apoloPlaceMRobot(robot,[-4,3,0],pi);    
+    apoloResetOdometry(robot,[0,0,0]);
+    apoloUpdate();
+    pos_theta = [0,0,0];
+    fase = 1;
+while i< iteraciones && fase<4
+    %% GetLocation
+    pos_robot = apoloGetLocationMRobot(robot);
+%     pos =pos_temp([1,2]);
+%     angle = wrapToPi(pos_temp(4));
+%     
+%     pos_dif = ref_pos - pos;
+%     angle_dif = wrapToPi(wrapToPi(atan2(ref_pos(2)-pos(2),ref_pos(1)-pos(1))) - angle);
+%     
+%     pos_controller = [pos_dif, angle_dif];
+%     pos_theta = [pos_theta; [angle, wrapToPi(atan2(pos(2),pos(1))),angle_dif]];
+%     
+    %% Debugging
+    %fprintf("angle_robot: %f angle_obj: %f angle_resta: %f\n",radtodeg(angle),radtodeg(wrapToPi(atan2(pos(2),pos(1)))),radtodeg(angle_dif));
+   
+    %% Controlador
+    [v,w,reached] = Controller(robot,ref_pos(fase,:),pos_robot);
+    v_ = [v; v]
+    %% Mover Robot
+    apoloMoveMRobot(robot,[v, w],0.1);
+    if mod(i,2)==0
+        apoloUpdate();
+    end
+    
+    %% Si completa el objetivo pasa al siguiente
+    if reached
+        fase = fase + 1;
+        disp(fase);
+        reached = 0;
+    end
+    i = i + 1;
+    
+end
+
+% pos_theta(1,:) = pos_theta(2,:);
+% 
+% x=[1:1:(iteraciones+1)];
+% plot(x,pos_theta(:,1), 'b-')
+
+apoloGetLocationMRobot(robot)

@@ -6,7 +6,7 @@ global time_unit
 
 load calibracion_odometria % A
 
-%% Coloación del robot
+%% Colocación del robot
 N_medidas = 100;
 N_sensores = 3;
 
