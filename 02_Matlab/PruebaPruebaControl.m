@@ -4,12 +4,6 @@ i = 0;
 iteraciones = 10000;
 robot_name = 'Marvin';
 
-% Construcción del robot
-bot = robot([5.0 2.5 -pi/6]);
-bot = add_us(bot, [0.2 0 0]);
-bot = add_us(bot, [0.18 0.11 0.7]);
-bot = add_us(bot, [0.18 -0.11 -0.7]);
-
 % Contrucción del entorno
 en = entorno;
 en = add_pared(en, [0 0], [0 19.4]);
@@ -43,12 +37,18 @@ ref_pos = [ 1,  4,  0;
             ];
         
 
-start_pos = [1, 1, pi/2];
+start_pos = [1; 1; pi/2];
 
 Pxini = 0.001;
 Pyini = 0.001;
 Pthetaini = 0.001;
 Pk = [Pxini 0 0; 0 Pyini 0 ; 0 0 Pthetaini];
+
+% Construcción del robot
+bot = robot(start_pos);
+bot = add_us(bot, [0.2 0 0]);
+bot = add_us(bot, [0.18 0.11 0.7]);
+bot = add_us(bot, [0.18 -0.11 -0.7]);
 
 %Inicializacion arrays para plotear
 v_array = 0;
@@ -59,21 +59,25 @@ mode = 1;
 
 
 %%Posicionamos a tito marvin para las pruebas
-    apoloPlaceMRobot(robot_name,[start_pos([1,2]),0],start_pos(3));    
-    apoloResetOdometry(robot_name,[0,0,0]);
-    apoloUpdate();
-    
+apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
+apoloResetOdometry(robot_name,[0,0,0]);
+apoloUpdate();
 
-    fase = 1;
-    pos_robot_array = apoloGetLocationMRobot(robot_name);
-    pos_robot = apoloGetLocationMRobot(robot_name);
+
+fase = 1;
+pos_robot_array = start_pos;
+pos_robot = start_pos;
+
 while i< iteraciones && fase<=n_fases
     %% Debugging
     %fprintf("angle_robot: %f angle_obj: %f angle_resta: %f\n",radtodeg(angle),radtodeg(wrapToPi(atan2(pos(2),pos(1)))),radtodeg(angle_dif));
    
     %% Controlador
     [v,w,mode,reached] = Controller(ref_pos(fase,:),pos_robot,mode);
-    
+%     v = 0.2;
+%     w = -0.02;
+%     mode = 1;
+%     reached = 0;
     %Recogemos en un array las variables para hacer un plot
     v_array = [v_array; v];
     w_array = [w_array; w];

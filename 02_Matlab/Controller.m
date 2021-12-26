@@ -4,7 +4,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode)
     %Como de momento pos_robot es con getLocation tiene la forma [x y z
     %theta]
     
-    tol_giro = 0.01;
+    tol_giro = 0.05;
     tol_distancia = 0.01;
 
     %Calculo de diferencia de posicion 
@@ -35,7 +35,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode)
         %realimentarlo y tal
         
         mode = 1;
-        w = angle_dif/pi;  %Valor entre 0-1 por eso divido entre pi
+        w = angle_dif/pi * 0.2;  %Valor entre 0-1 por eso divido entre pi
                        %Dado que el maximo error va a ser pi radianes
         v = 0;
         reached = 0;
