@@ -1,7 +1,7 @@
 %% Prueba para hacer control como dice Peris
 %Variables
 i = 0;
-iteraciones = 10000;
+iteraciones = 1000;
 robot_name = 'Marvin';
 
 % Contrucción del entorno
@@ -21,21 +21,11 @@ en = add_pared(en, [2.0 6.8],[8.0 6.8]);
 en = add_pared(en, [1.4 10.0],[8.0 10.0]);
 en = add_pared(en, [1.4 14.6],[8.0 14.6]);
 
-n_fases = 12;
-ref_pos = [ 1,  4,  0;
-            7,  4 ,  -pi/2;
-            7,  1 ,  pi;
-            3,  1 ,  pi/2;
-            3,  4 ,  pi;
-            1,  4,  pi;
-            1,  5.75,  0;
-            7,  5.75,  pi;
-            1,  5.75,  pi/2;
-            0.75,  10,  pi/2;
-            0.75,  15,  pi/2;
-            3.5,  17.5,  0;
-            ];
-        
+ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
+            4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
+            0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0       ];
+
+n_fases = size(ref_pos,2);
 
 start_pos = [1; 1; pi/2];
 
@@ -68,29 +58,38 @@ fase = 1;
 pos_robot_array = start_pos;
 pos_robot = start_pos;
 
+%% Debugging porque me quiero morir
+Zk_ = [0;0;0];
+deb = [0;0;0];
+
+%% Bucle como tal
 while i< iteraciones && fase<=n_fases
     %% Debugging
     %fprintf("angle_robot: %f angle_obj: %f angle_resta: %f\n",radtodeg(angle),radtodeg(wrapToPi(atan2(pos(2),pos(1)))),radtodeg(angle_dif));
    
     %% Controlador
-    [v,w,mode,reached] = Controller(ref_pos(fase,:),pos_robot,mode);
-%     v = 0.2;
-%     w = -0.02;
-%     mode = 1;
-%     reached = 0;
+    %[v,w,mode,reached] = PruebaController(ref_pos(:,fase),pos_robot,mode);
+    v = 0.2;
+    w = 0;
+    mode = 1;
+    reached = 0;
+
     %Recogemos en un array las variables para hacer un plot
     v_array = [v_array; v];
     w_array = [w_array; w];
     mode_array = [mode_array; mode];
     reached_array = [reached_array; reached];
-    pos_robot_array = [pos_robot_array; pos_robot];
+    pos_robot_array = [pos_robot_array, pos_robot];
+
+    % Debug
+    deb = [deb, Zk_];
     
     %% Mover Robot
-    apoloMoveMRobot(robot_name,[v, w],0.1);
+    apoloMoveMRobot(robot_name,[v w],0.1);
     apoloUpdate();
 
-    %% Kalmitan
-    [pos_robot, Pk] = ConLaKalman(pos_robot, Pk, [v w], bot, en);
+    %% Filtro de Kalman
+    [pos_robot, Pk, Zk_] = ConLaKalman(pos_robot, Pk, [v w], bot, en);
 
     %% Si completa el objetivo pasa al siguiente
     if reached
@@ -102,8 +101,6 @@ while i< iteraciones && fase<=n_fases
     pause(1/1000);
     
 end
-
-
 
  x=[1:1:(i+1)];
  
@@ -126,7 +123,7 @@ end
  
  
  figure("Name", "Posicion 2d");
- plot(pos_robot_array(:,1),pos_robot_array(:,2),'b-');
+ plot(pos_robot_array(1,:),pos_robot_array(2,:),'b-');
  title("Trayectoria 2d");
  
 

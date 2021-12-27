@@ -1,41 +1,46 @@
-function [X_k1, P_k1] = ConLaKalman(Xk, Pk, v, robot, entorno)
-% Kalman time
-Pxini = 0.001;
-Pyini = 0.001;
-Pthetaini = 0.001;
-Rk = [Pxini 0 0; 0 Pyini 0 ; 0 0 Pthetaini];
+function [Xk1, Pk1, debug] = ConLaKalman(Xk, Pk, v, robot, entorno)
+% Esta función realiza el filtro de Kalman sobre las medidas
+% tomadas a través de los sensores del robot para la corrección de la
+% posición del mismo.
+
+% Esto es una solución cutre, habría que hacer algo mejor
+Rxini = 0.001;
+Ryini = 0.001;
+Rthetaini = 0.001;
+Rk = [Rxini 0 0; 0 Ryini 0 ; 0 0 Rthetaini];
 
 
 %% Varianza del ruido del proceso
 load('calibracion_odometria.mat', 'Q_pu');
-Qk_1 = Matriz_Q(v, Q_pu);
+Qk = Matriz_Q(v, Q_pu);
 
 %% Odometría
-[X_k, P_k] = GetPositionFromOdometry(Xk, Pk, Qk_1); % X(k+1|k) y P(k+1|k)
+[Xk_, Pk_] = GetPositionFromOdometry(Xk, Pk, Qk); % X(k+1|k) y P(k+1|k)
 
 %% Medida de los ultrasonidos
 [Zk] = apoloGetAllultrasonicSensors('Marvin')';
 
-%% Prediccion de la medida
+%% Prediccion de la medida de los ultrasonidos
+robot = robot.actualizar_posicion(Xk_);
 [Zk_, Hk, ~] = robot.estimar_medidas(entorno);    
 
-%% Comparacion
+%% Comparacion entre predicción y estimación
 nu = Zk-Zk_;
+debug = Zk_;
+
+% Eliminación de medidas de ultrasonidos fuera de su rango de aplicación
 for i = 1:numel(Zk,1)
     if Zk(i) > 2.9 || Zk_(i) > 2.9
         nu(i) = 0;
     end
 end
 
-Sk = Hk*P_k*((Hk)') + Rk;
-Wk = P_k*((Hk)')*inv(Sk);
+% Matrices Sk y Wk
+Sk = Hk*Pk_*((Hk)') + Rk;
+Wk = Pk_*((Hk)')*inv(Sk);
 
-% Correccion
-X_k1 = X_k + Wk*nu;
-P_k1 = (eye(3)-Wk*Hk)*P_k;
+%% Corrección del estado X(k+1) y de la matriz P(k+1)
+Xk1 = Xk_ + Wk*nu;
+Pk1 = (eye(3)-Wk*Hk)*Pk_;
 
-% figure("Name", "Posicion 2d");
-% plot(pos_robot_array(:,1),pos_robot_array(:,2),'b-');
-% title("Trayectoria 2d");
-%  
 end
