@@ -26,7 +26,7 @@ Z_k = GetUltrasonicSensorsWithNoise(robot_name);
 nu = Z_k-Z_estimado;
 
 % Eliminación de medidas de ultrasonidos fuera de su rango de aplicación
-for i = 1:length(Z_k) %numel no funciona así
+for i = 1:length(Z_k) 
     if Z_k(i) > 2.9 || Z_estimado(i) > 2.9
         nu(i) = 0;
     end

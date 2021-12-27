@@ -52,7 +52,13 @@ apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));
 apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
+<<<<<<< HEAD:02_Matlab/Main.m
 au = 1; % variable para no hacer apoloUpdate todo el rato
+=======
+%% Debugging
+% Zk_ = [0;0;0];
+% deb = [0;0;0];
+>>>>>>> a0615665394be6a775b47d13c284492a88dee5cf:02_Matlab/PruebaPruebaControl.m
 
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
