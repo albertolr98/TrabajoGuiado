@@ -51,8 +51,8 @@ apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
 %% Debugging
-Zk_ = [0;0;0];
-deb = [0;0;0];
+% Zk_ = [0;0;0];
+% deb = [0;0;0];
 
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
