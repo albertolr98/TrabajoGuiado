@@ -1,4 +1,4 @@
-function [Xk1, Pk1, debug] = ConLaKalman(Xk, Pk, v, robot, entorno)
+function [Xk1, Pk1, debug] = KalmanFilter(Xk, Pk, v, robot, entorno)
 % Esta función realiza el filtro de Kalman sobre las medidas
 % tomadas a través de los sensores del robot para la corrección de la
 % posición del mismo.
