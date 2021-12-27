@@ -43,7 +43,7 @@ ref_pos = [ 1,  4,  0;
             ];
         
 
-start_pos = [1, 1, pi/2];
+start_pos = [1 1 pi/2]';
 
 Pxini = 0.001;
 Pyini = 0.001;

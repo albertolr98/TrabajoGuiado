@@ -2,27 +2,15 @@
 clear all
 clc
 
+global time_unit robot_name %#ok<*NUSED>
+
 %% Variables
 i = 0;
-iteraciones = 1000;
-robot_name = 'Marvin';
+iteraciones = 100000;
 
+variables_globales
 %% Contrucción del entorno
-en = entorno;
-en = add_pared(en, [0 0], [0 19.4]);
-en = add_pared(en, [0 19.4], [8.0 19.4]);
-en = add_pared(en, [8.0 19.4],[8.0 0]);
-en = add_pared(en, [8.0 0],[0 0]);
-
-en = add_pared(en, [2.0 0],[2.0 3.2]);
-en = add_pared(en, [2.0 4.6],[2.0 5.0]);
-en = add_pared(en, [2.0 6.4],[2.0 8.6]);
-
-en = add_pared(en, [2.0 4.6],[8.0 4.6]);
-en = add_pared(en, [2.0 6.8],[8.0 6.8]);
-
-en = add_pared(en, [1.4 10.0],[8.0 10.0]);
-en = add_pared(en, [1.4 14.6],[8.0 14.6]);
+load construccion_entorno_robot
 
 %% Posiciones objetivo
 ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
@@ -41,7 +29,7 @@ Pk = [Pxini 0 0; 0 Pyini 0 ; 0 0 Pthetaini];
 
 fase = 1;
 pos_robot_array = start_pos;
-pos_robot = start_pos;
+X_estimada = start_pos;
 
 % Construcción del robot
 bot = robot(start_pos);
@@ -68,30 +56,26 @@ deb = [0;0;0];
 
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
-    %% Debugging
-    deb = [deb, Zk_];
-
     %% Controlador
-    %[v,w,mode,reached] = PruebaController(ref_pos(:,fase),pos_robot,mode);
-    v = 0.2;
-    w = 0;
-    mode = 1;
-    reached = 0;
+    [v,w,mode,reached] = PruebaController(ref_pos(:,fase),X_estimada,mode);
 
-    %Recogemos en un array las variables para hacer un plot
+    % Recogemos en un array las variables para hacer un plot
     v_array = [v_array; v];
     w_array = [w_array; w];
     mode_array = [mode_array; mode];
     reached_array = [reached_array; reached];
-    pos_robot_array = [pos_robot_array, pos_robot];
+    pos_robot_array = [pos_robot_array, X_estimada];
     
     %% Movimiento Robot
+    apoloResetOdometry(robot_name, [0 0 0]) 
     apoloMoveMRobot(robot_name,[v w],0.1);
     apoloUpdate();
-
+    
     %% Filtro de Kalman
-    [pos_robot, Pk, Zk_] = KalmanFilter(pos_robot, Pk, [v w], bot, en);
+    [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
 
+    bot = bot.actualizar_posicion(X_estimada);
+    
     %% Si completa el objetivo pasa al siguiente
     if reached
         fase = fase + 1;
@@ -99,33 +83,37 @@ while i< iteraciones && fase<=n_fases
         apoloGetLocationMRobot(robot_name);
     end
     i = i + 1;
-    pause(1/1000);
+%     pause(time_unit);
     
 end
 
 %% Dibujos de interés
- x=[1:1:(i+1)];
+ t=[1:1:(i+1)];
  
  figure("Name","Velocidades");
  subplot(2,2,1);
- plot(x,v_array, 'b-');
+ plot(t,v_array, 'b-');
  title("velocidad lineal");
  
  subplot(2,2,2);
- plot(x,w_array, 'b-');
+ plot(t,w_array, 'b-');
  title("velocidad angular");
  
  subplot(2,2,3);
- plot(x,mode_array, 'b-');
+ plot(t,mode_array, 'b-');
  title("Modo de control");
  
  subplot(2,2,4);
- plot(x,reached_array, 'b-');
+ plot(t,reached_array, 'b-');
  title("Reached target");
  
  
  figure("Name", "Posicion 2d");
+ hold on
  plot(pos_robot_array(1,:),pos_robot_array(2,:),'b-');
+ plot_entorno(en, '-k', 'LineWidth', 2)
+ xlim([-6 14]);
+ ylim([0 20]);
  title("Trayectoria 2d");
  
 

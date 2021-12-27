@@ -22,7 +22,7 @@ classdef sensor_us
             obj.X_rel(3) = wrapToPi(obj.X_rel(3));
             obj.X_abs = zeros(3,1);
             
-            obj.angulo_cono = 0.25;
+            obj.angulo_cono = 0.174533;
         end
         
         function obj = actualizar_posicion(obj, X)

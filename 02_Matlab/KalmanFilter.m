@@ -1,9 +1,12 @@
-function [Xk1, Pk1, debug] = KalmanFilter(Xk, Pk, v, robot, entorno)
+function [X_k1_k1, P_k1_k1] = KalmanFilter(X_k_k, P_k_k, v, robot, entorno)
+%[Xk1, Pk1] = KALMANFILTER(Xk, Pk, v, robot, entorno)
 % Esta función realiza el filtro de Kalman sobre las medidas
 % tomadas a través de los sensores del robot para la corrección de la
 % posición del mismo.
 
-% Esto es una solución cutre, habría que hacer algo mejor
+global robot_name
+
+% Esto es una solución cutre, habría que hacer algo mejor % ESTOY DE ACUERDO
 Rxini = 0.001;
 Ryini = 0.001;
 Rthetaini = 0.001;
@@ -15,32 +18,31 @@ load('calibracion_odometria.mat', 'Q_pu');
 Qk = Matriz_Q(v, Q_pu);
 
 %% Odometría
-[Xk_, Pk_] = GetPositionFromOdometry(Xk, Pk, Qk); % X(k+1|k) y P(k+1|k)
-
-%% Medida de los ultrasonidos
-[Zk] = apoloGetAllultrasonicSensors('Marvin')';
+[X_k1_K, P_k1_K] = GetPositionFromOdometry(X_k_k, P_k_k, Qk); % X(k+1|k) y P(k+1|k)
 
 %% Prediccion de la medida de los ultrasonidos
-robot = robot.actualizar_posicion(Xk_);
-[Zk_, Hk, ~] = robot.estimar_medidas(entorno);    
+robot = robot.actualizar_posicion(X_k1_K);
+[Z_estimado, Hk, ~] = robot.estimar_medidas(entorno);    
+
+%% Medida de los ultrasonidos
+Z_k = apoloGetAllultrasonicSensors(robot_name)';
 
 %% Comparacion entre predicción y estimación
-nu = Zk-Zk_;
-debug = Zk_;
+nu = Z_k-Z_estimado;
 
 % Eliminación de medidas de ultrasonidos fuera de su rango de aplicación
-for i = 1:numel(Zk,1)
-    if Zk(i) > 2.9 || Zk_(i) > 2.9
+for i = 1:length(Z_k) %numel no funciona así
+    if Z_k(i) > 2.9 || Z_estimado(i) > 2.9
         nu(i) = 0;
     end
 end
 
 % Matrices Sk y Wk
-Sk = Hk*Pk_*((Hk)') + Rk;
-Wk = Pk_*((Hk)')*inv(Sk);
+Sk = Hk*P_k1_K*((Hk)') + Rk;
+Wk = P_k1_K*((Hk)')/(Sk);
 
 %% Corrección del estado X(k+1) y de la matriz P(k+1)
-Xk1 = Xk_ + Wk*nu;
-Pk1 = (eye(3)-Wk*Hk)*Pk_;
+X_k1_k1 = X_k1_K + Wk*nu;
+P_k1_k1 = (eye(3)-Wk*Hk)*P_k1_K;
 
 end
