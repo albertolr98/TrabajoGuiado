@@ -83,10 +83,6 @@ classdef sensor_us
             
             for i = 1:length(p)
                 
-                if i == 8
-                   'ain' 
-                end
-                
                 if p(i).tipo == 'h' 
                     %% pared horizontal  
                     % ángulo extremo del cono 1

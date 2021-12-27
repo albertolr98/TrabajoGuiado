@@ -5,7 +5,7 @@
 % Pablo García Peris, Guillermo Illana Gisbert y Alberto López Rodríguez
 clear
 
-global time_unit
+global time_unit robot_name
 
 variables_globales
 
@@ -23,19 +23,19 @@ variables = zeros(N_medidas, 3);
 idx = 1;
 for i = 1:length(v)
     for j = 1:length(w)
-        apoloPlaceMRobot('Marvin',[-12 10 0],0,'World 1');
+        apoloPlaceMRobot(robot_name,[-12 10 0],0);
         apoloUpdate
         
         odometria = zeros(N_medidas, 3);
         
         for k = 1:N_medidas
             % resetea odometría y mueve
-            apoloResetOdometry('Marvin', [0 0 0],'World 1');
-            apoloMoveMRobot('Marvin',[v(i) w(j)], time_unit, 'World 1');
+            apoloResetOdometry(robot_name, [0 0 0],'World 1');
+            apoloMoveMRobot(robot_name,[v(i) w(j)], time_unit, 'World 1');
             apoloUpdate();
             
             % obtiene los valores de la odometría
-            odometria_next = apoloGetOdometry('Marvin','World 1');
+            odometria_next = apoloGetOdometry(robot_name,'World 1');
             odometria(k,:) = odometria_next;
         
         end

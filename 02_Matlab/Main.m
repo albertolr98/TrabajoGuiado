@@ -1,5 +1,7 @@
-%% Prueba para hacer control como dice Peris
-clear all
+%% Main
+% Trabajo de Guiado y Navegación de Robots
+% Pablo García Peris, Guillermo Illana Gisbert y Alberto López Rodríguez
+clearvars
 clc
 
 global time_unit robot_name %#ok<*NUSED>
@@ -28,8 +30,9 @@ Pthetaini = 0.001;
 Pk = [Pxini 0 0; 0 Pyini 0 ; 0 0 Pthetaini];
 
 fase = 1;
-pos_robot_array = start_pos;
 X_estimada = start_pos;
+X_estimada_array = start_pos;
+X_real_array = start_pos;
 
 % Construcción del robot
 bot = robot(start_pos);
@@ -44,32 +47,32 @@ reached_array = 0;
 mode_array = 1;
 mode = 1;
 
-
 % Posicionamiento del robot
 apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
 apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
-%% Debugging
-Zk_ = [0;0;0];
-deb = [0;0;0];
+au = 1; % variable para no hacer apoloUpdate todo el rato
 
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
     %% Controlador
-    [v,w,mode,reached] = PruebaController(ref_pos(:,fase),X_estimada,mode);
+    [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode);
 
+    % solo para hacer comparaciones
+    X_real = apoloGetLocationMRobot(robot_name);
+    
     % Recogemos en un array las variables para hacer un plot
     v_array = [v_array; v];
     w_array = [w_array; w];
     mode_array = [mode_array; mode];
     reached_array = [reached_array; reached];
-    pos_robot_array = [pos_robot_array, X_estimada];
-    
+    X_estimada_array = [X_estimada_array, X_estimada];
+    X_real_array = [X_real_array, [X_real(1); X_real(2); X_real(4)]];
+        
     %% Movimiento Robot
     apoloResetOdometry(robot_name, [0 0 0]) 
     apoloMoveMRobot(robot_name,[v w],0.1);
-    apoloUpdate();
     
     %% Filtro de Kalman
     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
@@ -83,38 +86,48 @@ while i< iteraciones && fase<=n_fases
         apoloGetLocationMRobot(robot_name);
     end
     i = i + 1;
-%     pause(time_unit);
+    
+    if au == 10
+        au = 1;
+        apoloUpdate();
+    else
+        au = au + 1;
+    end
+    
     
 end
 
 %% Dibujos de interés
- t=[1:1:(i+1)];
- 
- figure("Name","Velocidades");
- subplot(2,2,1);
- plot(t,v_array, 'b-');
- title("velocidad lineal");
- 
- subplot(2,2,2);
- plot(t,w_array, 'b-');
- title("velocidad angular");
- 
- subplot(2,2,3);
- plot(t,mode_array, 'b-');
- title("Modo de control");
- 
- subplot(2,2,4);
- plot(t,reached_array, 'b-');
- title("Reached target");
- 
- 
- figure("Name", "Posicion 2d");
- hold on
- plot(pos_robot_array(1,:),pos_robot_array(2,:),'b-');
- plot_entorno(en, '-k', 'LineWidth', 2)
- xlim([-6 14]);
- ylim([0 20]);
- title("Trayectoria 2d");
- 
+t=1:i+1;
+
+figure("Name","Velocidades");
+subplot(2,2,1);
+plot(t,v_array, 'b-');
+title("velocidad lineal");
+
+subplot(2,2,2);
+plot(t,w_array, 'b-');
+title("velocidad angular");
+
+subplot(2,2,3);
+plot(t,mode_array, 'b-');
+title("Modo de control");
+
+subplot(2,2,4);
+plot(t,reached_array, 'b-');
+title("Reached target");
+
+%%
+figure("Name", "Posicion 2d");
+hold on
+plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
+plot(X_real_array(1,:),X_real_array(2,:),'r-');
+plot(ref_pos(1,:), ref_pos(2,:), 'xm');
+plot_entorno(en, '-k', 'LineWidth', 2)
+xlim([-6 14]);
+ylim([0 20]);
+
+title("Trayectoria 2d");
+
 
 apoloGetLocationMRobot(robot_name)

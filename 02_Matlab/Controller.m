@@ -4,12 +4,14 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode)
     %Como de momento pos_robot es con getLocation tiene la forma [x y z
     %theta]
     
-    tol_giro = 0.05;
-    tol_distancia = 0.01;
+%     tol_giro = 0.05;
+%     tol_distancia = 0.01;
+    tol_giro = 0.1;
+    tol_distancia = 0.1;
 
     %Calculo de diferencia de posicion 
     pos_dif =pos_objetivo([1,2])-pos_robot([1,2]);
-    angle_robot = wrapToPi(pos_robot(4));
+    angle_robot = wrapToPi(pos_robot(3));
 
     %Calculo distancia
     distancia = sqrt(pos_dif(1)^2+pos_dif(2)^2);
