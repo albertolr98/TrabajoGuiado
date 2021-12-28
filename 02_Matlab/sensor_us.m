@@ -9,11 +9,12 @@ classdef sensor_us
     end
     
     methods
-        function obj = sensor_us(X_rel)
-            %SENSOR_US([x_rel y_rel theta_rel])
+        function obj = sensor_us(X_rel, ang_cono)
+            %SENSOR_US([x_rel y_rel theta_rel], ang_cono)
             %   Constructor de un sensor de ultrasonidos, con unas 
             %   posiciones [x_rel y_rel] respecto al centro del robot,  y
-            %   apuntando en un ángulo theta_rel.
+            %   apuntando en un ángulo theta_rel. EL ángulo del cono es
+            %   ang_cono.
             if isrow(X_rel)
                 X_rel = X_rel';
             end
@@ -22,7 +23,7 @@ classdef sensor_us
             obj.X_rel(3) = wrapToPi(obj.X_rel(3));
             obj.X_abs = zeros(3,1);
             
-            obj.angulo_cono = 0.174533;
+            obj.angulo_cono = ang_cono; %0.174533;
         end
         
         function obj = actualizar_posicion(obj, X)

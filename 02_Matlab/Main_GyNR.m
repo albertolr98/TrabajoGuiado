@@ -6,13 +6,14 @@ clc
 
 global time_unit robot_name %#ok<*NUSED>
 
+%% Contrucción del entorno y robot
+load construccion_entorno_robot
+
 %% Variables
 i = 0;
-iteraciones = 100000;
+iteraciones = 10000;
 
 variables_globales
-%% Contrucción del entorno
-load construccion_entorno_robot
 
 %% Posiciones objetivo
 ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
@@ -24,6 +25,7 @@ n_fases = size(ref_pos, 2);
 %% Inicialización
 start_pos = [1; 1; pi/2];
 
+%
 Pxini = 0.001;
 Pyini = 0.001;
 Pthetaini = 0.001;
@@ -34,11 +36,7 @@ X_estimada = start_pos;
 X_estimada_array = start_pos;
 X_real_array = start_pos;
 
-% Construcción del robot
-bot = robot(start_pos);
-bot = add_us(bot, [0.2 0 0]);
-bot = add_us(bot, [0.18 0.11 0.7]);
-bot = add_us(bot, [0.18 -0.11 -0.7]);
+bot = bot.actualizar_posicion(start_pos);
 
 % Inicializacion arrays para plotear
 v_array = 0;
@@ -52,13 +50,7 @@ apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));
 apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
-<<<<<<< HEAD:02_Matlab/Main.m
 au = 1; % variable para no hacer apoloUpdate todo el rato
-=======
-%% Debugging
-% Zk_ = [0;0;0];
-% deb = [0;0;0];
->>>>>>> a0615665394be6a775b47d13c284492a88dee5cf:02_Matlab/PruebaPruebaControl.m
 
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
@@ -129,7 +121,8 @@ hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
 plot(X_real_array(1,:),X_real_array(2,:),'r-');
 plot(ref_pos(1,:), ref_pos(2,:), 'xm');
-plot_entorno(en, '-k', 'LineWidth', 2)
+plot_entorno(en, '-k', 'LineWidth', 2);
+legend('x_{estimada}', 'x_{real}');
 xlim([-6 14]);
 ylim([0 20]);
 
