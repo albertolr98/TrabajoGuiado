@@ -1,4 +1,4 @@
-function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode)
+function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque)
     %CONTROLLER esta funcion toma la posicion relativa a la cual 
     %debe ir el robot y proporciona v y w para alcanzar el objetivo
     %Como de momento pos_robot es con getLocation tiene la forma [x y z
@@ -29,7 +29,13 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode)
     
   
     %Correccion angulo
-    if (abs(angle_dif) > tol_giro) && mode~=3
+    if ~choque
+        v = -0.1 +(0.1+0.1).*rand(1,1);
+        w = -0.1 +(0.1+0.1).*rand(1,1);
+        mode = 1;
+        reached = 0;
+
+    elseif (abs(angle_dif) > tol_giro) && mode~=3
         %Como al llegar al objetivo el angulo se puede volver loco he
         %puesto que si ha llegado al modo 3 "Correccion orientacion" no
         %pueda regresar al modo correccion de ángulo. Seguramente esto se
