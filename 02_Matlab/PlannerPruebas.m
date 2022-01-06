@@ -1,11 +1,11 @@
-clear all
+
 % Fuertemente inspirado de este ejemplo
 % openExample('nav/PlanPathBetweenTwoSE2StatesExample')
 
-
+function ref_pos = PlannerPruebas(start, goal,resolucion)
 %% Definicion de variables
-resolucion = 0.1; % Metros
-inflacion = 0.25; % Lo que crece el mapa para que no toque las paredes el robot
+
+inflacion = 0.3; % Lo que crece el mapa para que no toque las paredes el robot
 X_limits = [0,10]; %limites del mapa
 Y_limits = [0,21];  
 
@@ -79,8 +79,7 @@ planner.MaxConnectionDistance = 1; % Si incrementamos este valor explora más
                                    % solucion
 
 % Principio y meta. Adecuados a la resolucion.                                   
-start = [2/resolucion,2/resolucion,0];
-goal =  [8/resolucion,7/resolucion,0];
+
 
 
 % Planificador planificando
@@ -90,3 +89,7 @@ goal =  [8/resolucion,7/resolucion,0];
 map.show; hold on;
 plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
 plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
+
+ref_pos = ((pthObj.States-1/resolucion)*resolucion);
+disp(ref_pos)
+end

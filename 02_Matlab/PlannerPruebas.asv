@@ -1,8 +1,11 @@
-clear all
 
+% Fuertemente inspirado de este ejemplo
+% openExample('nav/PlanPathBetweenTwoSE2StatesExample')
+
+function ref_pos = PlannerPruebas(start, goal)
 %% Definicion de variables
 resolucion = 0.1; % Metros
-inflacion = 0.25; % Lo que crece el mapa para que no toque las paredes el robot
+inflacion = 0.3; % Lo que crece el mapa para que no toque las paredes el robot
 X_limits = [0,10]; %limites del mapa
 Y_limits = [0,21];  
 
@@ -60,11 +63,11 @@ sv = validatorOccupancyMap(ss);
 % Transformamos mapa hecho a mano a mapa de ocupación que es lo que
 % entiende el resto de funciones
 map = occupancyMap(mapa);
-show(map)
+
 
 % Pasamos el mapa al validador 
 sv.Map = map;
-sv.ValidationDistance = 1; % Este parametro aun no se que hace
+sv.ValidationDistance = 0.01; % Este parametro aun no se que hace
 
 ss.StateBounds = [map.XWorldLimits;map.YWorldLimits; [-pi pi]];
 
@@ -75,13 +78,17 @@ planner.MaxConnectionDistance = 1; % Si incrementamos este valor explora más
                                    % si es pequeño a veces no encuentra
                                    % solucion
 
-% Principio y                                    
-start = [2/resolucion,2/resolucion,0];
-goal =  [8/resolucion,7/resolucion,0];
+% Principio y meta. Adecuados a la resolucion.                                   
 
+
+
+% Planificador planificando
 [pthObj,solnInfo] = planner.plan(start,goal);
 
-
+% Mostrar el arbol y el recorrido
 map.show; hold on;
-plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'.-'); % tree expansion
-plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % draw path
+plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
+plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
+
+ref_pos = ((pthObj.States-1)*resolucion);
+end
