@@ -2,9 +2,9 @@
 % Fuertemente inspirado de este ejemplo
 % openExample('nav/PlanPathBetweenTwoSE2StatesExample')
 
-function ref_pos = PlannerPruebas(start, goal)
+function ref_pos = PlannerPruebas(start, goal,resolucion)
 %% Definicion de variables
-resolucion = 0.1; % Metros
+
 inflacion = 0.3; % Lo que crece el mapa para que no toque las paredes el robot
 X_limits = [0,10]; %limites del mapa
 Y_limits = [0,21];  
@@ -22,6 +22,8 @@ paredes = [ [0 0], [0 19.4];
             [1.4 10.0],[8.0 10.0];
             [1.4 14.6],[8.0 14.6]];
 
+start = start /resolucion;
+goal = goal / resolucion;
 %% Creacion mapa
 
 % Para crear un mapa de celdillas de la resolucion deseada dividimos entre
@@ -90,5 +92,6 @@ map.show; hold on;
 plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
 plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
 
-ref_pos = ((pthObj.States-1)*resolucion);
+ref_pos = ((pthObj.States-1/resolucion)*resolucion)';
+
 end

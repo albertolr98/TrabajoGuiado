@@ -60,6 +60,13 @@ au = 1; % variable para no hacer apoloUpdate todo el rato
 % deb = [0;0;0];
 
 
+%% Planificacion
+inflacion = 0.5;
+resolucion = 0.2;
+start = [1,1,0];
+goal =  [7,6,0];
+ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
+n_fases = size(ref_pos, 2);
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
     %% Controlador

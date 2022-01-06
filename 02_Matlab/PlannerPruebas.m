@@ -2,10 +2,10 @@
 % Fuertemente inspirado de este ejemplo
 % openExample('nav/PlanPathBetweenTwoSE2StatesExample')
 
-function ref_pos = PlannerPruebas(start, goal,resolucion)
+function ref_pos = PlannerPruebas(start, goal,resolucion,inflacion)
 %% Definicion de variables
 
-inflacion = 0.3; % Lo que crece el mapa para que no toque las paredes el robot
+ % Inflacion: Lo que crece el mapa para que no toque las paredes el robot
 X_limits = [0,10]; %limites del mapa
 Y_limits = [0,21];  
 
@@ -21,6 +21,16 @@ paredes = [ [0 0], [0 19.4];
             [2.0 6.8],[8.0 6.8];
             [1.4 10.0],[8.0 10.0];
             [1.4 14.6],[8.0 14.6]];
+
+
+angle_start = start(3);
+angle_goal = goal(3);
+
+start = (start+1) /resolucion;
+goal = (goal+1) / resolucion;
+
+start(3)=angle_start;
+goal(3) = angle_goal;
 
 %% Creacion mapa
 
@@ -74,10 +84,10 @@ ss.StateBounds = [map.XWorldLimits;map.YWorldLimits; [-pi pi]];
 
 % Elegimos el planificador
 planner = plannerRRTStar(ss,sv);   % Se puede cambiar a plannerRRT(ss,sv);
-planner.MaxConnectionDistance = 1; % Si incrementamos este valor explora más
+planner.MaxConnectionDistance = 2; % Si incrementamos este valor explora más
                                    % si es pequeño a veces no encuentra
                                    % solucion
-
+planner.ContinueAfterGoalReached = true;
 % Principio y meta. Adecuados a la resolucion.                                   
 
 
@@ -90,6 +100,8 @@ map.show; hold on;
 plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
 plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
 
+angles_path = pthObj.States(:,3);
 ref_pos = ((pthObj.States-1/resolucion)*resolucion);
-disp(ref_pos)
+ref_pos(:,3)= wrapToPi(angles_path);
+ref_pos = ref_pos';
 end

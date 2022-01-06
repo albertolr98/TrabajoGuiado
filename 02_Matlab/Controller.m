@@ -21,8 +21,10 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque)
     angle_dif = wrapToPi(angle_objetivo - angle_robot);
     
     %Una vez llega a la posicion se reorienta 
-    orientation_dif = wrapToPi(pos_objetivo(3)-angle_robot);
-    
+
+    %orientation_dif = wrapToPi(pos_objetivo(3)-angle_robot);
+    orientation_dif = 0;
+
     %El tipo de control que he implementado es un proporcional bastante
     %cutre pero funciona, se puede mejorar pero creo que es más interesante
     %centrarse en lo que aún no funciona
@@ -57,6 +59,9 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque)
     
     %Correccion orientacion
     elseif abs(orientation_dif)>tol_giro
+        if mode~=3
+            disp("MODO3")
+        end
          mode = 3;
          v = 0;
          w = orientation_dif/pi;
