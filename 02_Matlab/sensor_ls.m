@@ -1,13 +1,7 @@
-classdef sensor_ls
+classdef sensor_ls < sensor
     %SENSOR_LS([x_us y_us], beta_us)
     %   Sensor láser para balizas.
-    
-    properties
-        X_rel % X relativas al robot
-        X_abs % X absolutas
-    end
-    
-    methods
+    methods 
         function obj = sensor_ls(X_rel)
             %SENSOR_LS([x_rel y_rel theta_rel])
             %   Constructor de un sensor láser, con unas 
@@ -77,6 +71,7 @@ classdef sensor_ls
                 z = [z;
                      theta; d];
             end
+            
         end
     end
 end
