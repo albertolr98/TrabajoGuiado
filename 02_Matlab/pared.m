@@ -18,7 +18,7 @@ classdef pared
             if isrow(X1)
                 X1 = X1';
             end
-            if isrow(2)
+            if isrow(X2)
                 X2 = X2';
             end
             

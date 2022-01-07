@@ -35,6 +35,14 @@ classdef robot
             obj.sensores(end) = actualizar_posicion(obj.sensores(end), obj.X);
         end
         
+        function obj = add_ls(obj, X_rel)
+            %ADD_LS(obj, [x_rel y_rel])
+            %   Añade un sensor laser con unas posiciones [x_rel y_rel]
+            %   respecto al centro del robot.
+            obj.sensores = [obj.sensores sensor_ls(X_rel)];
+            obj.sensores(end) = actualizar_posicion(obj.sensores(end), obj.X);
+        end
+
         function plot_robot(obj)
         	%PLOT_ROBOT(obj) 
             %   Dibuja el robot y sus sensores. 

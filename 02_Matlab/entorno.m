@@ -6,6 +6,7 @@ classdef entorno
     
     properties
         paredes
+        balizas
     end
     
     methods
@@ -13,6 +14,7 @@ classdef entorno
             %ENTORNO 
             %   Constructor del entorno
             obj.paredes = [];
+            obj.balizas = [];
         end
         
         function obj = add_pared(obj, X1, X2)
@@ -22,6 +24,12 @@ classdef entorno
             %   vertical u horizontal.
             obj.paredes = [obj.paredes pared(X1, X2)];
         end
+
+        function obj = add_baliza(obj, X)
+            %ADD_BALIZA([x y]) 
+            %   Añade una baliza,  siendo x, y sus coordenadas
+            obj.balizas = [obj.balizas baliza(X)];
+        end
         
         function plot_entorno(obj, varargin)
             %PLOT_ENTORNO(entorno, ...) 
@@ -29,6 +37,9 @@ classdef entorno
             hold on
             for i = 1:length(obj.paredes)
                 plot_pared(obj.paredes(i), varargin{:});
+            end
+            for i = 1:length(obj.balizas)
+                plot_baliza(obj.balizas(i), 'o');
             end
             hold off
         end

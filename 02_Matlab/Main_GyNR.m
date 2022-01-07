@@ -4,7 +4,7 @@
 clearvars
 clc
 
-global time_unit robot_name %#ok<*NUSED>
+global time_unit robot_name nbalizas %#ok<*NUSED>
 
 %% Variables
 i = 0;
@@ -12,7 +12,7 @@ iteraciones = 100000;
 
 variables_globales
 %% Contrucción del entorno
-load construccion_entorno_robot
+load construccion_entorno_robot_test
 
 %% Posiciones objetivo
 ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
@@ -39,6 +39,7 @@ bot = robot(start_pos);
 bot = add_us(bot, [0.2 0 0]);
 bot = add_us(bot, [0.18 0.11 0.7]);
 bot = add_us(bot, [0.18 -0.11 -0.7]);
+bot = add_ls(bot, [0.1 0 0]);
 
 % Inicializacion arrays para plotear
 v_array = 0;
@@ -47,6 +48,7 @@ reached_array = 0;
 mode_array = 1;
 mode = 1;
 choque = 1;
+
 % Posicionamiento del robot
 apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
 apoloResetOdometry(robot_name,[0,0,0]);
@@ -91,7 +93,7 @@ while i< iteraciones && fase<=n_fases
     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
 
     bot = bot.actualizar_posicion(X_estimada);
-    
+
     %% Si completa el objetivo pasa al siguiente
     if reached
         fase = fase + 1;
