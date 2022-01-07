@@ -23,9 +23,9 @@ robot = robot.actualizar_posicion(X_k1_K);
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
 
 %% Medida de las balizas
-Z2_k = GetLaserData(laser_name, nbalizas);
+%Z2_k = GetLaserData(laser_name, nbalizas);
 
-Z_k = [Z1_k; Z2_k];
+Z_k = [Z1_k];
 
 %% Comparacion entre predicción y estimación
 nu = Z_k-Z_estimado;

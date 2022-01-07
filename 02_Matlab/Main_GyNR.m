@@ -39,7 +39,7 @@ bot = robot(start_pos);
 bot = add_us(bot, [0.2 0 0]);
 bot = add_us(bot, [0.18 0.11 0.7]);
 bot = add_us(bot, [0.18 -0.11 -0.7]);
-bot = add_ls(bot, [0.1 0 0]);
+%bot = add_ls(bot, [0.1 0 0]);
 
 % Inicializacion arrays para plotear
 v_array = 0;
