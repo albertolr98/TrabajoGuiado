@@ -61,7 +61,7 @@ classdef sensor_ls < sensor
                 d = sqrt((b(i).X(1) - x_abs)^2 + (b(i).X(2) - y_abs)^2);
                 dx = (b(i).X(1)-x_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
                 dy = (b(i).X(2)-y_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                dz = -1;
+                dz = 0;
 
                 % Matriz H
                 H = [H;

@@ -7,7 +7,8 @@ function [X_k1_k1, P_k1_k1] = KalmanFilter(X_k_k, P_k_k, v, robot, entorno)
 global robot_name laser_name nbalizas
 
 load('calibracion_odometria.mat', 'Q_pu');
-load('calibracion_sensores', 'R');
+%load('calibracion_sensores', 'R');
+R = eye(23)*8.73435e-04; % HAY QUE CAMBIAR ESTO
 
 %% Varianza del ruido del proceso
 Qk = Matriz_Q(v, Q_pu);
@@ -23,9 +24,10 @@ robot = robot.actualizar_posicion(X_k1_K);
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
 
 %% Medida de las balizas
-%Z2_k = GetLaserData(laser_name, nbalizas);
+Z2_k = GetLaserData(laser_name, nbalizas);
 
-Z_k = [Z1_k];
+%% Medida de todos los sensores
+Z_k = [Z1_k; Z2_k];
 
 %% Comparacion entre predicción y estimación
 nu = Z_k-Z_estimado;
