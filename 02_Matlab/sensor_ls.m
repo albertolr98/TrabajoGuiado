@@ -34,7 +34,6 @@ classdef sensor_ls < sensor
         
         %% Estimación de medidas y Jacobiano
         function [z, H, X_m] = estimar_medidas(obj, entorno)
-            disp("mal")
             %[z, H, X_m] = ESTIMAR_MEDIDAS(obj, entorno, robot)
             %   Devuelve la z estimada del sensor (z), así como el
             %   jacobiano de esta (H).
@@ -61,7 +60,7 @@ classdef sensor_ls < sensor
                 d = sqrt((b(i).X(1) - x_abs)^2 + (b(i).X(2) - y_abs)^2);
                 dx = (b(i).X(1)-x_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
                 dy = (b(i).X(2)-y_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                dz = -1;
+                dz = 0;
 
                 % Matriz H
                 H = [H;
