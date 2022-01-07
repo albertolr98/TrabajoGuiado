@@ -63,7 +63,6 @@ classdef sensor_us < sensor
             %   Devuelve la z estimada del sensor (z), así como el
             %   jacobiano de esta (H). Devuelve también las coordenadas del 
             %   punto X_m, para poder ponerlo en una imagen, o donde sea.
-            disp("bien")
             p = entorno.paredes;
             
             x_abs = obj.X_abs(1);
