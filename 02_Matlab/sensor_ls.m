@@ -69,7 +69,8 @@ classdef sensor_ls < sensor
 
                 % Vector z
                 z = [z;
-                     theta; d];
+                     theta; 
+                     d];
             end
             
         end

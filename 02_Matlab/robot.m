@@ -7,6 +7,7 @@ classdef robot
     properties
         sensores 
         X % [x; y; theta]
+        num_us
     end
     
     methods
@@ -24,6 +25,8 @@ classdef robot
             obj.sensores = sensor.empty(); %A.L.
             
             obj.X = X;
+
+            obj.num_us = 0;
         end
         
         function obj = add_us(obj, X_rel)
@@ -59,7 +62,9 @@ classdef robot
             plot([x x2], [y y2], '-g'); % dirección de mirada
             
             for i = 1:length(obj.sensores)
-                plot_us(obj.sensores(i));
+                if (isa(obj.sensores(i), 'sensor_us'))
+                    plot_us(obj.sensores(i));
+                end
             end
             hold off
         end

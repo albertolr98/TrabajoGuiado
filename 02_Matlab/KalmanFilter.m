@@ -18,7 +18,7 @@ Qk = Matriz_Q(v, Q_pu);
 robot = robot.actualizar_posicion(X_k1_K);
 
 %% Prediccion de la medida de los ultrasonidos
-[Z_estimado, Hk, ~] = robot.estimar_medidas(entorno);    
+[Z_estimado, Hk, X_m] = robot.estimar_medidas(entorno);    
 
 %% Medida de los ultrasonidos
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
@@ -29,12 +29,21 @@ Z2_k = GetLaserData(laser_name, nbalizas);
 %% Medida de todos los sensores
 Z_k = [Z1_k; Z2_k];
 
+% ver_entorno_y_medidas;
+
 %% Comparacion entre predicción y estimación
 nu = Z_k-Z_estimado;
 
 % Eliminación de medidas de ultrasonidos fuera de su rango de aplicación
 for i = 1:length(Z1_k) 
     if Z_k(i) > 2.9 || Z_estimado(i) > 2.9
+        nu(i) = 0;
+    end
+end
+
+% Eliminación de medidas de láser cuando no se ven las balizas
+for i = length(Z1_k)+1:length(Z1_k)+length(Z2_k) 
+    if isnan(nu(i))
         nu(i) = 0;
     end
 end

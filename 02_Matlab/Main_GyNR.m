@@ -138,7 +138,7 @@ hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
 plot(X_real_array(1,:),X_real_array(2,:),'r-');
 plot(ref_pos(1,:), ref_pos(2,:), 'xm');
-plot_entorno(en, '-k', 'LineWidth', 2)
+plot_entorno(en)
 xlim([-6 14]);
 ylim([0 20]);
 

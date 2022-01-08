@@ -31,15 +31,15 @@ classdef entorno
             obj.balizas = [obj.balizas baliza(X)];
         end
         
-        function plot_entorno(obj, varargin)
+        function plot_entorno(obj)
             %PLOT_ENTORNO(entorno, ...) 
             %   Dibuja las paredes que constituyen el entorno.
             hold on
             for i = 1:length(obj.paredes)
-                plot_pared(obj.paredes(i), varargin{:});
+                plot_pared(obj.paredes(i), 'b-', 'LineWidth', 2);
             end
             for i = 1:length(obj.balizas)
-                plot_baliza(obj.balizas(i), 'o');
+                plot_baliza(obj.balizas(i), 'ro', 'MarkerSize', 6, 'LineWidth', 2);
             end
             hold off
         end

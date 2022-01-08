@@ -21,7 +21,7 @@ bot = add_us(bot, [5 -2.5 -pi/6]);
 % dibujo
 
 figure;
-plot_entorno(en, 'b', 'LineWidth', 3);
+plot_entorno(en);
 plot_robot(bot);
 
 hold on

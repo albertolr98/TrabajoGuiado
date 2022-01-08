@@ -10,8 +10,8 @@ Z = [];
 for i = 1:nbalizas
     idx = find(id == i);
     if isempty(idx)
-        theta = 0;
-        d = 0;
+        theta = NaN;
+        d = NaN;
     else
         theta = ang(idx);
         d = dist(idx);

@@ -22,7 +22,7 @@ bot = add_us(bot, [0 0 pi/6]);
 bot = add_us(bot, [0 0 -pi/6]);
 
 figure;
-plot_entorno(en, 'b', 'LineWidth', 3);
+plot_entorno(en);
 plot_robot(bot);
 [z_estimado, H] = estimar_medidas(bot, en)
 
