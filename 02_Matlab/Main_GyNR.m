@@ -58,7 +58,7 @@ au = 1; % variable para no hacer apoloUpdate todo el rato
 inflacion = 0.5;
 resolucion = 0.2;
 start = [1,1,0];
-goal =  [6,17,0];
+goal =  [6,13,0];
 
 while n_fases == 0
     ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
