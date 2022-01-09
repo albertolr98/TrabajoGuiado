@@ -43,6 +43,9 @@ reached_array = 0;
 mode_array = 1;
 mode = 1;
 choque = 1;
+control_orientacion = 0;
+reached = 0;
+n_fases = 0;
 
 % Posicionamiento del robot
 apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
@@ -56,13 +59,20 @@ inflacion = 0.5;
 resolucion = 0.2;
 start = [1,1,0];
 goal =  [7,6,0];
-ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
-n_fases = size(ref_pos, 2);
+
+while n_fases == 0
+    ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
+    n_fases = size(ref_pos, 2);
+end
+
 
 %% Bucle como tal
-while i< iteraciones && fase<=n_fases
+while i< iteraciones && fase<=n_fases  
     %% Controlador
-    [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque);
+    if fase == n_fases
+        control_orientacion = 1;
+    end
+    [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
 
     % solo para hacer comparaciones
     X_real = apoloGetLocationMRobot(robot_name);

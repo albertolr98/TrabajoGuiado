@@ -8,7 +8,12 @@ global robot_name laser_name nbalizas
 
 load('calibracion_odometria.mat', 'Q_pu');
 %load('calibracion_sensores', 'R');
-R = eye(23)*8.73435e-04; % HAY QUE CAMBIAR ESTO
+if isa(robot.sensores(end),'sensor_ls')
+    errores =[ones(1,3)*8.73435e-04,ones(1,20)*0.02];
+    R = diag(errores); % HAY QUE CAMBIAR ESTO
+else
+    R = eye(3)*8.73435e-04;
+end
 
 %% Varianza del ruido del proceso
 Qk = Matriz_Q(v, Q_pu);
@@ -24,10 +29,15 @@ robot = robot.actualizar_posicion(X_k1_K);
 % Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
 Z1_k = apoloGetAllultrasonicSensors(robot_name)';
 %% Medida de las balizas
-Z2_k = GetLaserData(laser_name, nbalizas);
-
+if isa(robot.sensores(end),'sensor_ls')
+    Z2_k = GetLaserData(laser_name, nbalizas);
+end
 %% Medida de todos los sensores
-Z_k = [Z1_k; Z2_k];
+if isa(robot.sensores(end),'sensor_ls')
+    Z_k = [Z1_k; Z2_k];
+else
+    Z_k = Z1_k;
+end
 
 % ver_entorno_y_medidas;
 
