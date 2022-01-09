@@ -8,7 +8,12 @@ global robot_name laser_name nbalizas %#ok<*GVMIS>
 
 load('calibracion_odometria.mat', 'Q_pu');
 load('calibracion_sensores', 'R');
-
+if isa(robot.sensores(end),'sensor_ls')
+    errores =[ones(1,5)*8.73435e-04,ones(1,20)*0.001];
+    R = diag(errores); % HAY QUE CAMBIAR ESTO
+else
+    R = eye(5)*8.73435e-04;
+end
 %% Varianza del ruido del proceso
 Qk = Matriz_Q(v, Q_pu);
 
