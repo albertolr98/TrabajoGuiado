@@ -77,17 +77,19 @@ map = occupancyMap(mapa);
 
 % Pasamos el mapa al validador 
 sv.Map = map;
-sv.ValidationDistance = 0.1; % Este parametro aun no se que hace
+sv.ValidationDistance = 0.01; % Este parametro aun no se que hace
 
 ss.StateBounds = [map.XWorldLimits;map.YWorldLimits; [-pi pi]];
 
 
 % Elegimos el planificador
 planner = plannerRRTStar(ss,sv);   % Se puede cambiar a plannerRRT(ss,sv);
-planner.MaxConnectionDistance = 2; % Si incrementamos este valor explora más
+planner.MaxConnectionDistance = 3; % Si incrementamos este valor explora más
                                    % si es pequeño a veces no encuentra
                                    % solucion
 planner.ContinueAfterGoalReached = true;
+
+
 % Principio y meta. Adecuados a la resolucion.                                   
 
 

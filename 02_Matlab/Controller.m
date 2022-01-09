@@ -45,7 +45,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
         %realimentarlo y tal
         
         mode = 1;
-        w = angle_dif/pi * 0.2;  %Valor entre 0-1 por eso divido entre pi
+        w = angle_dif/pi *3;%* 0.2;  %Valor entre 0-1 por eso divido entre pi
                        %Dado que el maximo error va a ser pi radianes
         v = 0;
         reached = 0;
@@ -53,7 +53,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
     %Correccion distancia
     elseif (abs(pos_dif(1))>tol_distancia) || (abs(pos_dif(2))>tol_distancia)
         mode = 2;
-        v = distancia;
+        v = distancia*3;
         w = 0;
         reached = 0;
     

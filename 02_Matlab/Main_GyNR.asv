@@ -95,16 +95,16 @@ while i< iteraciones && fase<=n_fases
     bot = bot.actualizar_posicion(X_estimada);
 
     %% Si completa el objetivo pasa al siguiente
-    salto_fases = 3;
     if reached
-        if fase < (n_fases-salto_fases)
-            fase = fase + salto_fases;
-        elseif fase < n_fases
+        if fase == n_fases:
+            
+        end
+        fase = fase + 3;
+        if fase>n_fases
             fase = n_fases;
-        elseif fase == n_fases
-            fase = fase+1;
         end
         reached = 0;
+        apoloGetLocationMRobot(robot_name);
     end
     i = i + 1;
     
