@@ -31,7 +31,7 @@ end
 var_med_us = var(medidas_us);
 var_med_ls = var(medidas_ls);
 
-R = diag([var_med_us repmat(var_med_ls, 1, nbalizas)])
+R = diag([var_med_us repmat(var_med_ls(1), 1, nbalizas)])
 
 %% Dibujos
 for i = 1:N_sensores_us

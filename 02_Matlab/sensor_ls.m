@@ -64,13 +64,13 @@ classdef sensor_ls < sensor
 
                 % Matriz H
                 H = [H;
-                     tx ty tz;
-                     dx dy dz];
+                     tx ty tz];
+%                      dx dy dz];
 
                 % Vector z
                 z = [z;
-                     theta; 
-                     d];
+                     theta]; 
+%                      d];
             end
             
         end

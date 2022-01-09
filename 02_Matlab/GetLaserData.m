@@ -18,6 +18,6 @@ for i = 1:nbalizas
     end
     idx = [];
     Z = [Z;
-        theta; d];
+        theta; ];%d];
 end
 end
