@@ -95,16 +95,16 @@ while i< iteraciones && fase<=n_fases
     bot = bot.actualizar_posicion(X_estimada);
 
     %% Si completa el objetivo pasa al siguiente
-    salto_fases = 3;
     if reached
-        if fase < (n_fases-salto_fases)
-            fase = fase + salto_fases;
-        elseif fase < n_fases
+        if fase == n_fases:
+            
+        end
+        fase = fase + 3;
+        if fase>n_fases
             fase = n_fases;
-        elseif fase == n_fases
-            fase = fase+1;
         end
         reached = 0;
+        apoloGetLocationMRobot(robot_name);
     end
     i = i + 1;
     
@@ -146,9 +146,8 @@ figure("Name", "Posicion 2d");
 hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
 plot(X_real_array(1,:),X_real_array(2,:),'r-');
-% plot(ref_pos(1,:), ref_pos(2,:), 'xm');
+plot(ref_pos(1,:), ref_pos(2,:), 'xm');
 plot_entorno(en)
-legend('trayectoria estimada', 'trayectoria real')
 xlim([-6 14]);
 ylim([0 20]);
 
