@@ -1,5 +1,5 @@
 %% Declarar variables globales (es más fácil trabajar con variables globales a veces)
-global time_unit robot_name nbalizas laser_name
+global time_unit robot_name nbalizas laser_nam
 
 
 robot_name = 'Marvin';

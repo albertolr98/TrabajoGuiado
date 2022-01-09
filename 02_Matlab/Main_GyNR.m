@@ -4,7 +4,7 @@
 clearvars
 clc
 
-global time_unit robot_name nbalizas %#ok<*NUSED>
+global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
 
 %% Variables
 i = 0;
@@ -12,14 +12,14 @@ iteraciones = 100000;
 
 variables_globales
 %% Contrucción del entorno
-load construccion_entorno_robot_test
+load construccion_entorno_robot
 
 %% Posiciones objetivo
-ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
-            4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
-            0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
-
-n_fases = size(ref_pos, 2);
+% ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
+%             4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
+%             0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
+% 
+% n_fases = size(ref_pos, 2);
 
 %% Inicialización
 start_pos = [1; 1; pi/2];
@@ -34,12 +34,7 @@ X_estimada = start_pos;
 X_estimada_array = start_pos;
 X_real_array = start_pos;
 
-% Construcción del robot
-bot = robot(start_pos);
-bot = add_us(bot, [0.2 0 0]);
-bot = add_us(bot, [0.18 0.11 0.7]);
-bot = add_us(bot, [0.18 -0.11 -0.7]);
-bot = add_ls(bot, [0.1 0 0]);
+bot = bot.actualizar_posicion(start_pos);
 
 % Inicializacion arrays para plotear
 v_array = 0;
@@ -54,13 +49,7 @@ apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));
 apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
-
 au = 1; % variable para no hacer apoloUpdate todo el rato
-
-%% Debugging
-% Zk_ = [0;0;0];
-% deb = [0;0;0];
-
 
 %% Planificacion
 inflacion = 0.5;
@@ -69,6 +58,7 @@ start = [1,1,0];
 goal =  [7,6,0];
 ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
 n_fases = size(ref_pos, 2);
+
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases
     %% Controlador
@@ -78,7 +68,7 @@ while i< iteraciones && fase<=n_fases
     X_real = apoloGetLocationMRobot(robot_name);
     
     % Recogemos en un array las variables para hacer un plot
-    v_array = [v_array; v];
+    v_array = [v_array; v]; %#ok<*AGROW> 
     w_array = [w_array; w];
     mode_array = [mode_array; mode];
     reached_array = [reached_array; reached];
@@ -102,7 +92,7 @@ while i< iteraciones && fase<=n_fases
     end
     i = i + 1;
     
-    if au == 10
+    if au == 1
         au = 1;
         apoloUpdate();
     else

@@ -29,12 +29,12 @@ classdef robot
             obj.num_us = 0;
         end
         
-        function obj = add_us(obj, X_rel)
+        function obj = add_us(obj, X_rel, delta)
             %ADD_US(obj, [x_rel y_rel theta_rel])
             %   Añade un sensor ultrasonido con unas posiciones [x_rel y_rel]
             %   respecto al centro del robot, apuntando en un ángulo
-            %   theta_rel.
-            obj.sensores = [obj.sensores sensor_us(X_rel)];
+            %   theta_rel. El cono tiene un ángulo delta de amplitud.
+            obj.sensores = [obj.sensores sensor_us(X_rel, delta)];
             obj.sensores(end) = actualizar_posicion(obj.sensores(end), obj.X);
         end
         

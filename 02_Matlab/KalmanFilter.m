@@ -21,8 +21,8 @@ robot = robot.actualizar_posicion(X_k1_K);
 [Z_estimado, Hk, X_m] = robot.estimar_medidas(entorno);    
 
 %% Medida de los ultrasonidos
-Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
-
+% Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
+Z1_k = apoloGetAllultrasonicSensors(robot_name)';
 %% Medida de las balizas
 Z2_k = GetLaserData(laser_name, nbalizas);
 
@@ -42,11 +42,22 @@ for i = 1:length(Z1_k)
 end
 
 % Eliminación de medidas de láser cuando no se ven las balizas
-for i = length(Z1_k)+1:length(Z1_k)+length(Z2_k) 
+for i = length(Z1_k)+1:length(Z_k) 
     if isnan(nu(i))
         nu(i) = 0;
     end
 end
+
+nu
+
+% Los ángulos(medidas impares del láser) se ponen entre -pi y pi
+for i = length(Z1_k)+1:2:length(Z_k)-1
+    if isnan(nu(i))
+        nu(i) = wrapToPi(nu(i));
+    end
+end
+
+nu
 
 % Matrices Sk y Wk
 Sk = Hk*P_k1_K*((Hk)') + R;

@@ -1,5 +1,5 @@
 %% Construcción de entorno y robot
-
+% Entorno
 en = entorno;
 en = add_pared(en, [0 0], [0 19.4]);
 en = add_pared(en, [0 19.4], [8.0 19.4]);
@@ -27,5 +27,14 @@ en = add_baliza(en, [2 8.6]);
 en = add_baliza(en, [2 6.4]);
 en = add_baliza(en, [2 4.6]);
 
-save construccion_entorno_robot en
+% Robot
+delta = 0.174533;
+
+bot = robot([0 0 0]);
+bot = add_us(bot, [0.2 0 0], delta);
+bot = add_us(bot, [0.18 0.11 0.7], delta);
+bot = add_us(bot, [0.18 -0.11 -0.7], delta);
+bot = add_ls(bot, [0.1 0 0]);
+
+save construccion_entorno_robot en bot
 
