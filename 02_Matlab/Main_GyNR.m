@@ -102,11 +102,14 @@ while i< iteraciones && fase<=n_fases
     end
     i = i + 1;
     
+    % Hace apolo update solo cada 10 iteraciones
     if au == 1
-        au = 1;
         apoloUpdate();
-    else
-        au = au + 1;
+        au = au +1;
+    elseif au == 10
+        au = 1;
+    else 
+        au = au +1;
     end
     
     
