@@ -23,7 +23,7 @@ variables = zeros(N_medidas, 3);
 idx = 1;
 for i = 1:length(v)
     for j = 1:length(w)
-        apoloPlaceMRobot(robot_name,[-12 10 0],0);
+        apoloPlaceMRobot(robot_name,[4 3 0],0);
         apoloUpdate
         
         odometria = zeros(N_medidas, 3);

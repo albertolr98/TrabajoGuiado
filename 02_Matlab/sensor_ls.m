@@ -43,6 +43,12 @@ classdef sensor_ls < sensor
             y_abs = obj.X_abs(2);
             theta_abs = obj.X_abs(3);
 
+            x_rel = obj.X_rel(1);
+            y_rel = obj.X_rel(2);
+            theta_rel = obj.X_rel(3);
+
+            theta = theta_abs - theta_rel; % theta del robot
+
             % medidas
             z = inf; % la distancia usada es la menor de todas las distancias
             X_m = [0 0];
@@ -50,26 +56,31 @@ classdef sensor_ls < sensor
             z = [];
             
             for i = 1:length(b)
-                % Theta
-                theta = atan2(b(i).X(2) - y_abs, b(i).X(1) - x_abs) - theta_abs;
-                tx = (b(i).X(2)-y_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                ty = -(b(i).X(1)-x_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                tz = -1;
+                % derivadas parciales previas (regla de la cadena) - theta
+                % del robot
+                dxdz = -x_rel*sin(theta) - y_rel*cos(theta);
+                dydz = x_rel*cos(theta) - y_rel*sin(theta);
+
+                % Ángulo medido phi
+                phi = atan2(b(i).X(2) - y_abs, b(i).X(1) - x_abs) - theta_abs;
+                px = (b(i).X(2)-y_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+                py = -(b(i).X(1)-x_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+                pz = px*dxdz + py*dydz - 1;
                 
                 % Distancia
                 d = sqrt((b(i).X(1) - x_abs)^2 + (b(i).X(2) - y_abs)^2);
                 dx = (b(i).X(1)-x_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
                 dy = (b(i).X(2)-y_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                dz = 0;
+                dz = dx*dxdz + dy*dydz;
 
-                % Matriz H
+                % Matriz H (jacobiana)
                 H = [H;
-                     tx ty tz;
+                     px py pz;
                      dx dy dz];
 
                 % Vector z
                 z = [z;
-                     theta; 
+                     phi; 
                      d];
             end
             

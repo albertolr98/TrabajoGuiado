@@ -8,21 +8,23 @@ global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
 
 %% Variables
 i = 0;
-iteraciones = 100000;
+iteraciones = 10000;
 
 variables_globales
 %% Contrucción del entorno
 load construccion_entorno_robot
 
 %% Posiciones objetivo
-% ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
-%             4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
-%             0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
-% 
-% n_fases = size(ref_pos, 2);
+ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
+            4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
+            0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
+
+n_fases = size(ref_pos, 2);
+
+
 
 %% Inicialización
-start_pos = [1; 1; pi/2];
+start_pos = [-5; 5; pi/2];
 
 Pxini = 0.001;
 Pyini = 0.001;
@@ -55,15 +57,15 @@ apoloUpdate();
 au = 1; % variable para no hacer apoloUpdate todo el rato
 
 %% Planificacion
-inflacion = 0.5;
-resolucion = 0.2;
-start = [1,1,0];
-goal =  [6,17,0];
-
-while n_fases == 0
-    ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
-    n_fases = size(ref_pos, 2);
-end
+% inflacion = 0.5;
+% resolucion = 0.2;
+% start = [1,1,0];
+% goal =  [6,17,0];
+% 
+% while n_fases == 0
+%     ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
+%     n_fases = size(ref_pos, 2);
+% end
 
 
 %% Bucle como tal
@@ -149,10 +151,10 @@ plot(X_real_array(1,:),X_real_array(2,:),'r-');
 % plot(ref_pos(1,:), ref_pos(2,:), 'xm');
 plot_entorno(en)
 legend('trayectoria estimada', 'trayectoria real')
-xlim([-6 14]);
-ylim([0 20]);
+% xlim([-6 14]);
+% ylim([0 20]);
 
 title("Trayectoria 2d");
 
 
-apoloGetLocationMRobot(robot_name)
+% apoloGetLocationMRobot(robot_name)

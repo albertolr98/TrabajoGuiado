@@ -13,17 +13,17 @@ load('calibracion_sensores', 'R');
 Qk = Matriz_Q(v, Q_pu);
 
 %% Odometría
-[X_k1_K, P_k1_K] = GetPositionFromOdometry(X_k_k, P_k_k, Qk); % X(k+1|k) y P(k+1|k)
-robot = robot.actualizar_posicion(X_k1_K);
+[X_k1_k, P_k1_k] = GetPositionFromOdometry(X_k_k, P_k_k, Qk); % X(k+1|k) y P(k+1|k)
+robot = robot.actualizar_posicion(X_k1_k);
 
-%% Prediccion de la medida de los ultrasonidos
+%% Prediccion de la medida de los sensores
 [Z_estimado, Hk, X_m] = robot.estimar_medidas(entorno);    
 
 %% Medida de los ultrasonidos
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
 % Z1_k = apoloGetAllultrasonicSensors(robot_name)';
 
-%% Medida de las balizas
+%% Medida de las balizas (si hay un láser)
 if isa(robot.sensores(end),'sensor_ls')
     Z2_k = GetLaserData(laser_name, nbalizas);
 end
@@ -61,15 +61,15 @@ for i = length(Z1_k)+1:2:length(Z_k)-1
     end
 end
 
-% nu
+nu
 
 % Matrices Sk y Wk
-Sk = Hk*P_k1_K*((Hk)') + R;
-Wk = P_k1_K*((Hk)')/(Sk);
+Sk = Hk*P_k1_k*((Hk)') + R;
+Wk = P_k1_k*((Hk)')/(Sk);
 
 %% Corrección del estado X(k+1) y de la matriz P(k+1)
-X_k1_k1 = X_k1_K + Wk*nu;
-P_k1_k1 = (eye(3)-Wk*Hk)*P_k1_K;
+X_k1_k1 = X_k1_k + Wk*nu;
+P_k1_k1 = (eye(3)-Wk*Hk)*P_k1_k;
 
 %% TRAMPAS para comprobar buen funcionamiento de otras cosas
 % aa = apoloGetLocationMRobot(robot_name);
