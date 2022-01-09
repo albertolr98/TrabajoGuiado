@@ -32,8 +32,10 @@ delta = 0.174533;
 
 bot = robot([0 0 0]);
 bot = add_us(bot, [0.2 0 0], delta);
-bot = add_us(bot, [0.18 0.11 0.7], delta);
-bot = add_us(bot, [0.18 -0.11 -0.7], delta);
+bot = add_us(bot, [0.06 0.19 1.2566], delta);
+bot = add_us(bot, [-0.16 0.12 2.5133], delta);
+bot = add_us(bot, [-0.16 -0.12 -2.5133], delta);
+bot = add_us(bot, [0.06 -0.19 -1.2566], delta);
 bot = add_ls(bot, [0.1 0 0]);
 
 save construccion_entorno_robot en bot

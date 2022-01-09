@@ -140,8 +140,9 @@ figure("Name", "Posicion 2d");
 hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
 plot(X_real_array(1,:),X_real_array(2,:),'r-');
-plot(ref_pos(1,:), ref_pos(2,:), 'xm');
+% plot(ref_pos(1,:), ref_pos(2,:), 'xm');
 plot_entorno(en)
+legend('trayectoria estimada', 'trayectoria real')
 xlim([-6 14]);
 ylim([0 20]);
 

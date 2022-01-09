@@ -7,7 +7,6 @@ classdef robot
     properties
         sensores 
         X % [x; y; theta]
-        num_us
     end
     
     methods
@@ -26,7 +25,6 @@ classdef robot
             
             obj.X = X;
 
-            obj.num_us = 0;
         end
         
         function obj = add_us(obj, X_rel, delta)

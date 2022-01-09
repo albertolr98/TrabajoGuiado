@@ -10,7 +10,7 @@ variables_globales
 
 %% Toma de datos
 N_medidas = 500;
-N_sensores_us = 3;
+N_sensores_us = 5;
 
 apoloPlaceMRobot(robot_name,[4 2 0],-pi/2);
 apoloUpdate();
