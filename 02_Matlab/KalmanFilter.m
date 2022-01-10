@@ -66,8 +66,6 @@ for i = length(Z1_k)+1:2:length(Z_k)-1
     end
 end
 
-nu
-
 % Matrices Sk y Wk
 Sk = Hk*P_k1_k*((Hk)') + R;
 Wk = P_k1_k*((Hk)')/(Sk);

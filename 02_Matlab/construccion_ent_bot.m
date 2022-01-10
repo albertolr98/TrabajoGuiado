@@ -27,6 +27,12 @@ en = add_baliza(en, [2 8.6]);
 en = add_baliza(en, [2 6.4]);
 en = add_baliza(en, [2 4.6]);
 
+% Súper sala
+% en = add_pared(en, [-1 0], [-1 19.4]);
+% en = add_pared(en, [-1 19.4], [-20.4 19.4]);
+% en = add_pared(en, [-20.4 19.4], [-20.4 0]);
+% en = add_pared(en, [-20.4 0], [-1 0]);
+
 % Robot
 delta = 0.174533;
 
