@@ -50,7 +50,6 @@ classdef sensor_ls < sensor
             theta = theta_abs - theta_rel; % theta del robot
 
             % medidas
-            z = inf; % la distancia usada es la menor de todas las distancias
             X_m = [0 0];
             H = [];
             z = [];
@@ -58,30 +57,35 @@ classdef sensor_ls < sensor
             for i = 1:length(b)
                 % derivadas parciales previas (regla de la cadena) - theta
                 % del robot
-                dxdz = -x_rel*sin(theta) - y_rel*cos(theta);
-                dydz = x_rel*cos(theta) - y_rel*sin(theta);
+                dx_dtheta = -x_rel*sin(theta) - y_rel*cos(theta);
+                dy_dtheta = x_rel*cos(theta) - y_rel*sin(theta);
 
                 % Ángulo medido phi
                 phi = atan2(b(i).X(2) - y_abs, b(i).X(1) - x_abs) - theta_abs;
-                px = (b(i).X(2)-y_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                py = -(b(i).X(1)-x_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                pz = px*dxdz + py*dydz - 1;
+                dphi_dx = (b(i).X(2)-y_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+                dphi_dy = -(b(i).X(1)-x_abs)/((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+                dphi_dtheta = dphi_dx*dx_dtheta + dphi_dy*dy_dtheta - 1;
                 
                 % Distancia
-                d = sqrt((b(i).X(1) - x_abs)^2 + (b(i).X(2) - y_abs)^2);
-                dx = (b(i).X(1)-x_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                dy = (b(i).X(2)-y_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
-                dz = dx*dxdz + dy*dydz;
+%                 d = sqrt((b(i).X(1) - x_abs)^2 + (b(i).X(2) - y_abs)^2);
+%                 dx = (b(i).X(1)-x_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+%                 dy = (b(i).X(2)-y_abs)/sqrt((b(i).X(1)-x_abs)^2+(b(i).X(2)-y_abs)^2);
+%                 dz = dx*dxdz + dy*dydz;
 
                 % Matriz H (jacobiana)
+%                 H = [H;
+%                      dphidx dphidy dphidtheta;
+%                      dx dy dz];
                 H = [H;
-                     px py pz;
-                     dx dy dz];
+                     dphi_dx dphi_dy dphi_dtheta];
+
 
                 % Vector z
+%                 z = [z;
+%                      phi; 
+%                      d];
                 z = [z;
-                     phi; 
-                     d];
+                     phi];
             end
             
         end

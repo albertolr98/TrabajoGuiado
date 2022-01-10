@@ -112,6 +112,8 @@ while i< iteraciones && fase<=n_fases
         reached = 0;
     end
     i = i + 1;
+
+    apoloUpdate()
     
     
 end

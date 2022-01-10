@@ -12,19 +12,19 @@ variables_globales
 N_medidas = 500;
 N_sensores_us = 5;
 
-apoloPlaceMRobot(robot_name,[4 2 0],-pi/2);
+apoloPlaceMRobot(robot_name,[5 2 0],0);
 apoloUpdate();
 
 %% Ultrasonidos (sin moverse)
 medidas_us = zeros(N_medidas, N_sensores_us);
-medidas_ls = zeros(N_medidas, 2); %solo se miden las distancias y ángulo del sensor nº 1
+medidas_ls = zeros(N_medidas, 1); % solo se mide el ángulo del sensor nº 1
 
 for i = 1:N_medidas
     medidas_next_us = GetUltrasonicSensorsWithNoise(robot_name);
     medidas_next_ls = GetLaserData(laser_name, nbalizas);
 
     medidas_us(i, :) = medidas_next_us;
-    medidas_ls(i, :) = medidas_next_ls(1:2)';
+    medidas_ls(i, :) = medidas_next_ls(1);
 
 end
 
@@ -50,10 +50,10 @@ xlabel('z (rad)');
 ylabel('medida')
 title('ángulo con baliza con láser');
 
-figure;
-plot(1:N_medidas, medidas_ls(:, 2));
-xlabel('z (m)');
-ylabel('medida')
-title('distancia a baliza con láser');
+% figure;
+% plot(1:N_medidas, medidas_ls(:, 2));
+% xlabel('z (m)');
+% ylabel('medida')
+% title('distancia a baliza con láser');
 
 save calibracion_sensores R
