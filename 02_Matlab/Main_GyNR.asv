@@ -7,11 +7,14 @@ clc
 global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
 
 %% Variables
+i = 0;
 iteraciones = 100000;
-variables_globales
 
+variables_globales
 %% Contrucción del entorno
 load construccion_entorno_robot
+
+
 
 %% Inicialización
 start_pos = [1; 1; pi/2];
@@ -19,7 +22,6 @@ trayectoria = [start_pos';
                 6,13,0;
                 start_pos';
                 6,6,0];
-
 Pxini = 0.001;
 Pyini = 0.001;
 Pthetaini = 0.001;
@@ -41,7 +43,7 @@ mode = 1;
 choque = 1;
 control_orientacion = 0;
 reached = 0;
-% n_fases = 0;
+n_fases = 0;
 
 % Posicionamiento del robot
 apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
@@ -73,9 +75,10 @@ n_fases = size(ref_pos, 2);
 % 
 % n_fases = size(ref_pos, 2);
 
-%% Bucle como tal
-i = 0;
 
+
+
+%% Bucle como tal
 while i< iteraciones && fase<=n_fases  
     %% Controlador
     if fase == n_fases
@@ -117,11 +120,11 @@ while i< iteraciones && fase<=n_fases
     end
     i = i + 1;
     
-    % Hace apolo update solo cada 2 iteraciones
+    % Hace apolo update solo cada 10 iteraciones
     if au == 1
         apoloUpdate();
         au = au +1;
-    elseif au == 2
+    elseif au == 10
         au = 1;
     else 
         au = au +1;
@@ -131,7 +134,7 @@ while i< iteraciones && fase<=n_fases
 end
 
 %% Dibujos de interés
-t=0:i;
+t=1:i-2;
 
 figure("Name","Velocidades");
 subplot(2,2,1);
@@ -155,7 +158,7 @@ figure("Name", "Posicion 2d");
 hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
 plot(X_real_array(1,:),X_real_array(2,:),'r-');
-plot(trayectoria(:,1), trayectoria(:,2), 'xm');
+% plot(ref_pos(1,:), ref_pos(2,:), 'xm');
 plot_entorno(en)
 legend('trayectoria estimada', 'trayectoria real')
 xlim([-6 14]);

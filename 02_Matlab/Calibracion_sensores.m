@@ -12,7 +12,7 @@ variables_globales
 N_medidas = 500;
 N_sensores_us = 5;
 
-apoloPlaceMRobot(robot_name,[4 2 0],-pi/2);
+apoloPlaceMRobot(robot_name,[5 2 0],0);
 apoloUpdate();
 
 %% Ultrasonidos (sin moverse)
@@ -33,9 +33,8 @@ var_med_us = var(medidas_us);
 %if isa(robot.sensores(end),'sensor_ls')
 var_med_ls = var(medidas_ls);
 
-R = diag([var_med_us repmat(var_med_ls(1), 1, nbalizas)]);
-%end
-% R = diag(var_med_us)
+R = diag([var_med_us repmat(var_med_ls(1), 1, nbalizas)])
+
 %% Dibujos
 for i = 1:N_sensores_us
     figure;
@@ -52,10 +51,10 @@ xlabel('z (rad)');
 ylabel('medida')
 title('ángulo con baliza con láser');
 
-figure;
-plot(1:N_medidas, medidas_ls(:, 2));
-xlabel('z (m)');
-ylabel('medida')
-title('distancia a baliza con láser');
+% figure;
+% plot(1:N_medidas, medidas_ls(:, 2));
+% xlabel('z (m)');
+% ylabel('medida')
+% title('distancia a baliza con láser');
 
 save calibracion_sensores R
