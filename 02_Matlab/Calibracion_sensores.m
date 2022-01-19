@@ -30,12 +30,12 @@ end
 
 var_med_us = var(medidas_us);
 
-% if isa(robot.sensores(end),'sensor_ls')
-% var_med_ls = var(medidas_ls);
-% 
-% R = diag([var_med_us repmat(var_med_ls(1), 1, nbalizas)])
-% end
-R = diag(var_med_us)
+%if isa(robot.sensores(end),'sensor_ls')
+var_med_ls = var(medidas_ls);
+
+R = diag([var_med_us repmat(var_med_ls(1), 1, nbalizas)]);
+%end
+% R = diag(var_med_us)
 %% Dibujos
 for i = 1:N_sensores_us
     figure;

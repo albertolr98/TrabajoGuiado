@@ -22,7 +22,7 @@ Qk = Matriz_Q(v, Q_pu);
 robot = robot.actualizar_posicion(X_k1_K);
 
 %% Prediccion de la medida de los ultrasonidos
-[Z_estimado, Hk, X_m] = robot.estimar_medidas(entorno);    
+[Z_estimado, Hk, ~] = robot.estimar_medidas(entorno);    
 
 %% Medida de los ultrasonidos
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
@@ -59,11 +59,9 @@ for i = length(Z1_k)+1:length(Z_k)
     end
 end
 
-% Los ángulos(medidas impares del láser) se ponen entre -pi y pi
-for i = length(Z1_k)+1:2:length(Z_k)-1
-    if isnan(nu(i))
-        nu(i) = wrapToPi(nu(i));
-    end
+% Los ángulos se ponen entre -pi y pi
+for i = length(Z1_k)+1:length(Z_k)
+    nu(i) = wrapToPi(nu(i));
 end
 
 % nu

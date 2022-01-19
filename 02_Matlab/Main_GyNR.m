@@ -117,7 +117,7 @@ while i< iteraciones && fase<=n_fases
     if au == 1
         apoloUpdate();
         au = au +1;
-    elseif au == 2
+    elseif au == 10
         au = 1;
     else 
         au = au +1;
