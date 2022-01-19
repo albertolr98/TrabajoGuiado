@@ -10,17 +10,11 @@ X_limits = [0,10]; %limites del mapa
 Y_limits = [0,21];  
 
 % Paredes del mapa
-paredes = [ [0 0], [0 19.4];
-           [0 19.4], [8.0 19.4];
-            [8.0 0],[8.0 19.4];
-            [0 0],[8 0];
-            [2.0 0],[2.0 3.2];
-            [2.0 4.6],[2.0 5.0];
-            [2.0 6.4],[2.0 8.6];
-            [2.0 4.6],[8.0 4.6];
-            [2.0 6.8],[8.0 6.8];
-            [1.4 10.0],[8.0 10.0];
-            [1.4 14.6],[8.0 14.6]];
+p = entorno.paredes;
+paredes = zeros(length(p), 4);
+for i =1:length(p)
+    paredes(i,:) = [p(i).X1' p(i).X2'];
+end
 
 
 angle_start = start(3);

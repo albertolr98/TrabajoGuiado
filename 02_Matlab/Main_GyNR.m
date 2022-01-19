@@ -20,17 +20,24 @@ trayectoria = [start_pos';
                 start_pos';
                 6,6,0];
 
-Pxini = 0.001;
-Pyini = 0.001;
-Pthetaini = 0.001;
-Pk = [Pxini 0 0; 0 Pyini 0 ; 0 0 Pthetaini];
+bot = bot.actualizar_posicion(start_pos); % bot es una objeto del tipo "robot"
 
-fase = 1;
+% [X_estimada, Pk] = EMC(bot, en, 1); % 100 iteraciones, "en" es una objeto del tipo entorno
+% 
+% for i = 1:100
+%     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [0 0], bot, en);
+% 
+%     bot = bot.actualizar_posicion(X_estimada);
+% end
+
+Pk = diag(ones(1,3))*0.001;
+
+% Posición inicial y arrays para guardar las posiciones reales y estimadas
 X_estimada = start_pos;
-X_estimada_array = start_pos;
+X_estimada_array = X_estimada;
 X_real_array = start_pos;
 
-bot = bot.actualizar_posicion(start_pos);
+fase = 1;
 
 % Inicializacion arrays para plotear
 v_array = 0;
@@ -57,8 +64,8 @@ resolucion = 0.2;
 ref_pos = trayectoria(1,:)';
 for i = 1:size(trayectoria,1)-1
     %while n_fases == 0
-        ref_pos_i = PlannerPruebas(trayectoria(i,:),trayectoria(i+1,:),resolucion,inflacion);
-        disp(ref_pos_i)
+        ref_pos_i = Planner(trayectoria(i,:),trayectoria(i+1,:),resolucion,inflacion, en);
+%         disp(ref_pos_i)
         %n_fases = size(ref_pos_i, 2);
    % end
     ref_pos = [ref_pos,ref_pos_i];

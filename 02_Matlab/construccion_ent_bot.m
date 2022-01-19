@@ -28,7 +28,7 @@ en = add_baliza(en, [2 6.4]);
 en = add_baliza(en, [2 4.6]);
 
 % Robot
-delta = 0.174533;
+delta = 0.174533; % ángulo del cono del ultrasonidos
 
 bot = robot([0 0 0]);
 bot = add_us(bot, [0.2 0 0], delta);
