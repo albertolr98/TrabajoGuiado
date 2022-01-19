@@ -23,7 +23,10 @@ load construccion_entorno_robot
 
 %% Inicialización
 start_pos = [1; 1; pi/2];
-
+trayectoria = [start_pos';
+                6,13,0;
+                start_pos';
+                6,6,0];
 Pxini = 0.001;
 Pyini = 0.001;
 Pthetaini = 0.001;
@@ -57,15 +60,17 @@ au = 1; % variable para no hacer apoloUpdate todo el rato
 %% Planificacion
 inflacion = 0.5;
 resolucion = 0.2;
-start = [1,1,0];
-goal =  [6,13,0];
 
-while n_fases == 0
-    ref_pos = PlannerPruebas(start,goal,resolucion,inflacion);
-    n_fases = size(ref_pos, 2);
+ref_pos = trayectoria(1,:)';
+for i = 1:size(trayectoria,1)-1
+    %while n_fases == 0
+        ref_pos_i = PlannerPruebas(trayectoria(i,:),trayectoria(i+1,:),resolucion,inflacion);
+        disp(ref_pos_i)
+        %n_fases = size(ref_pos_i, 2);
+   % end
+    ref_pos = [ref_pos,ref_pos_i];
 end
-
-
+n_fases = size(ref_pos, 2);
 %% Bucle como tal
 while i< iteraciones && fase<=n_fases  
     %% Controlador
@@ -95,7 +100,7 @@ while i< iteraciones && fase<=n_fases
     bot = bot.actualizar_posicion(X_estimada);
 
     %% Si completa el objetivo pasa al siguiente
-    salto_fases = 3;
+    salto_fases = 1;
     if reached
         if fase < (n_fases-salto_fases)
             fase = fase + salto_fases;
@@ -122,7 +127,7 @@ while i< iteraciones && fase<=n_fases
 end
 
 %% Dibujos de interés
-t=1:i+1;
+t=1:i-2;
 
 figure("Name","Velocidades");
 subplot(2,2,1);

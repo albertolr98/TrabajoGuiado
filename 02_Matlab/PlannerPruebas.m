@@ -98,6 +98,7 @@ planner.ContinueAfterGoalReached = true;
 [pthObj,solnInfo] = planner.plan(start,goal);
 
 % Mostrar el arbol y el recorrido
+figure();
 map.show; hold on;
 plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
 plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
