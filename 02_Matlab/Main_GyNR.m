@@ -11,9 +11,7 @@ iteraciones = 100000;
 variables_globales
 
 %% Contrucción del entorno
-
 load construccion_entorno_robot
-
 
 %% Inicialización
 start_pos = [1; 1; pi/2];
@@ -23,14 +21,6 @@ trayectoria = [start_pos';
                 6,6,0];
 
 bot = bot.actualizar_posicion(start_pos); % bot es una objeto del tipo "robot"
-
-% [X_estimada, Pk] = EMC(bot, en, 1); % 100 iteraciones, "en" es una objeto del tipo entorno
-% 
-% for i = 1:100
-%     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [0 0], bot, en);
-% 
-%     bot = bot.actualizar_posicion(X_estimada);
-% end
 
 Pk = diag(ones(1,3))*0.001;
 
