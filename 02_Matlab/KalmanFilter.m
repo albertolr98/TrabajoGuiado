@@ -1,5 +1,5 @@
 function [X_k1_k1, P_k1_k1] = KalmanFilter(X_k_k, P_k_k, v, robot, entorno)
-%[Xk1, Pk1] = KALMANFILTER(Xk, Pk, v, robot, entorno)
+%[X_k1_k1, P_k1_k1] = KALMANFILTER(X_k_k, P_k_k, v, robot, entorno)
 % Esta función realiza el filtro de Kalman sobre las medidas
 % tomadas a través de los sensores del robot para la corrección de la
 % posición del mismo.
@@ -8,12 +8,7 @@ global robot_name laser_name nbalizas %#ok<*GVMIS>
 
 load('calibracion_odometria.mat', 'Q_pu');
 load('calibracion_sensores', 'R');
-if isa(robot.sensores(end),'sensor_ls')
-    errores =[ones(1,5)*8.73435e-04,ones(1,20)*0.001];
-    R = diag(errores); % HAY QUE CAMBIAR ESTO
-else
-    R = eye(5)*8.73435e-04;
-end
+
 %% Varianza del ruido del proceso
 Qk = Matriz_Q(v, Q_pu);
 
@@ -21,12 +16,13 @@ Qk = Matriz_Q(v, Q_pu);
 [X_k1_k, P_k1_k] = GetPositionFromOdometry(X_k_k, P_k_k, Qk); % X(k+1|k) y P(k+1|k)
 robot = robot.actualizar_posicion(X_k1_k);
 
-%% Prediccion de la medida de los sensores
-[Z_estimado, Hk, X_m] = robot.estimar_medidas(entorno);    
+
+%% Prediccion de la medida de los ultrasonidos
+[Z_estimado, Hk, ~] = robot.estimar_medidas(entorno);    
+
 
 %% Medida de los ultrasonidos
 Z1_k = GetUltrasonicSensorsWithNoise(robot_name);
-% Z1_k = apoloGetAllultrasonicSensors(robot_name)';
 
 %% Medida de las balizas (si hay un láser)
 if isa(robot.sensores(end),'sensor_ls')
@@ -59,11 +55,9 @@ for i = length(Z1_k)+1:length(Z_k)
     end
 end
 
-% Los ángulos(medidas impares del láser) se ponen entre -pi y pi
-for i = length(Z1_k)+1:2:length(Z_k)-1
-    if isnan(nu(i))
-        nu(i) = wrapToPi(nu(i));
-    end
+% Los ángulos se ponen entre -pi y pi
+for i = length(Z1_k)+1:length(Z_k)
+    nu(i) = wrapToPi(nu(i));
 end
 
 % Matrices Sk y Wk

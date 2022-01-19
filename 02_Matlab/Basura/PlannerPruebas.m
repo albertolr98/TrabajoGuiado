@@ -1,8 +1,8 @@
-function ref_pos = Planner(start, goal,resolucion,inflacion, entorno)
-%ref_pos = PLANNER(start, goal,resolucion,inflacion, entorno)
+
 % Fuertemente inspirado de este ejemplo
 % openExample('nav/PlanPathBetweenTwoSE2StatesExample')
 
+function ref_pos = Planner(start, goal,resolucion,inflacion,entorno)
 %% Definicion de variables
 
  % Inflacion: Lo que crece el mapa para que no toque las paredes el robot
@@ -15,7 +15,10 @@ paredes = zeros(length(p), 4);
 for i =1:length(p)
     paredes(i,:) = [p(i).X1' p(i).X2'];
 end
+<<<<<<< HEAD:02_Matlab/Planner.m
+=======
 
+>>>>>>> VirgoliniAngulosYUS:02_Matlab/Basura/PlannerPruebas.m
 
 angle_start = start(3);
 angle_goal = goal(3);
