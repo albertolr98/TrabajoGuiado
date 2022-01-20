@@ -1,4 +1,4 @@
-function [X_k1_k, P_k1_k] = GetPositionFromOdometry(X_k_k, P_k_k, Q)
+function [X_k1_k, P_k1_k] = GetPositionFromOdometry(X_k_k, P_k_k,  de lQ)
 %[X(k+1|k), P(k+1|k)] = GETPOSITIONFROMODOMETRY(X(k|k), P(k|k), Q(k))
 % Calcula la nueva posición del robot a partir de la odometría y los
 % valores anteriores, así como la matriz de varianzas P asociada.

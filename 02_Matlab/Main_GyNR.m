@@ -7,7 +7,7 @@ clc
 global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
 
 %% Variables
-iteraciones = 100000;
+iteraciones = 10000;
 variables_globales
 
 %% Contrucción del entorno
