@@ -7,7 +7,8 @@ v = velocidad(1);
 w = velocidad(2);
 
 variables = diag([v; v*w; w].^2); % variables para calcular Q
-
+variables(1,2) = v^2*abs(w);
+variables(2,1) = v^2*abs(w);
 Q = Q_pu .* variables;
 
 end

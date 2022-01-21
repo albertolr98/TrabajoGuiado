@@ -4,6 +4,7 @@
 % Trabajo de Guiado y Navegación de Robots
 % Pablo García Peris, Guillermo Illana Gisbert y Alberto López Rodríguez
 clear
+format shortG
 
 global time_unit robot_name
 
@@ -17,8 +18,8 @@ w = 0:0.1:1; % vel. angular
 
 N = length(v) * length(w);
 
-var_odometria = zeros(N_medidas, 3);
-variables = zeros(N_medidas, 3);
+var_odometria = zeros(N, 3);
+variables = zeros(N, 3);
 
 idx = 1;
 for i = 1:length(v)
@@ -56,7 +57,8 @@ Q_pu = zeros(3, 3); % matriz Q, pero por unidad de la velocidad correspondiente
 for i = 1:3
     Q_pu(i,i) = variables(:,i)\var_odometria(:,i);
 end
-
+Q_pu(1,2) = sqrt(Q_pu(1,1)*Q_pu(2,2));
+Q_pu(2,1) = Q_pu(1,2)
 
 %% Dibujos
 texto_variables = ["v^2 (m^2/s^2)", "v^2·\omega^2 (m^2·rad/s^4)", "\omega^2 (rad^2/s^2)"];
