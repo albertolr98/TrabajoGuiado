@@ -31,13 +31,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
     
   
     %Correccion angulo
-    if ~choque
-        v = -0.1 +(0.1+0.1).*rand(1,1);
-        w = -0.1 +(0.1+0.1).*rand(1,1);
-        mode = 1;
-        reached = 0;
-
-    elseif (abs(angle_dif) > tol_giro) && mode~=3 
+    if (abs(angle_dif) > tol_giro) && mode~=3 
         %Como al llegar al objetivo el angulo se puede volver loco he
         %puesto que si ha llegado al modo 3 "Correccion orientacion" no
         %pueda regresar al modo correccion de ángulo. Seguramente esto se

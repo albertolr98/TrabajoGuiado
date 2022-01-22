@@ -49,7 +49,9 @@ mode_array = 1;
 mode = 1;
 choque = 1;
 control_orientacion = 0;
+orientacion_choque = 0;
 reached = 0;
+counter = 0;
 % n_fases = 0;
 
 % Posicionamiento del robot
@@ -61,7 +63,7 @@ au = 1; % variable para no hacer apoloUpdate todo el rato
 
 %% Planificacion
 inflacion = 0.5;
-resolucion = 0.2;
+resolucion = 0.1;
 
 
 ref_pos = trayectoria(1,:)';
@@ -104,8 +106,15 @@ while i< iteraciones && fase<=n_fases
     if fase == n_fases
         control_orientacion = 1;
     end
-    [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
 
+    if choque == 1
+        [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
+    
+    else
+        [v,w,counter,reached] = ControllerReactive(ref_pos(:,fase),X_estimada,counter,orientacion_choque);
+        
+        counter = counter + 1;
+    end
     % solo para hacer comparaciones
     X_real = apoloGetLocationMRobot(robot_name);
     
@@ -118,8 +127,21 @@ while i< iteraciones && fase<=n_fases
     X_real_array = [X_real_array, [X_real(1); X_real(2); X_real(4)]];
         
     %% Movimiento Robot
-    apoloResetOdometry(robot_name, [0 0 0]) 
-    choque = apoloMoveMRobot(robot_name,[v w],0.1);
+    if choque == 1
+        apoloResetOdometry(robot_name, [0 0 0]) 
+        choque = apoloMoveMRobot(robot_name,[v w],0.1);
+        
+    else
+        apoloResetOdometry(robot_name, [0 0 0]) 
+        apoloMoveMRobot(robot_name,[v w],0.1);
+        if reached
+            reached = 0;
+            choque = 1;
+            counter = 0;
+            ref_pos(:,fase) = ref_pos(:,fase) + [-0.1;-0.1;0];
+            disp( ref_pos(:,fase))
+        end
+    end 
     
     %% Filtro de Kalman
     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
