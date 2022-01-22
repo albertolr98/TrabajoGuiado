@@ -5,6 +5,7 @@
 % Pablo García Peris, Guillermo Illana Gisbert y Alberto López Rodríguez
 clear
 close all
+format shortG
 
 global time_unit robot_name
 
@@ -19,6 +20,7 @@ w = 0:0.1:1; % vel. angular
 N = length(v) * length(w);
 
 var_odometria = zeros(N, 3);
+cov_odometria = zeros(N, 1);
 variables = zeros(N, 3);
 
 idx = 1;
@@ -87,9 +89,10 @@ for i = 1:length(v)
 % 
 %             text(-0.15, 0.85, 'c)', 'Units', 'normalized')
 %         end
-        corrcoef(odometria)
         
         var_odometria(idx, :) = var(odometria);
+        c = cov(odometria(:,1), odometria(:,2));
+        cov_odometria(idx) = c(1,2);
         variables(idx, :, :) = [v(i)      v(i)*sqrt(w(j)) w(j)].^2;
         idx = idx + 1;
     end
@@ -104,11 +107,12 @@ Q_pu = zeros(3, 3); % matriz Q, pero por unidad de la velocidad correspondiente
 for i = 1:3
     Q_pu(i, i) = variables(:, i)\var_odometria(:, i);
 end
-
+Q_pu(1,2) = sqrt(Q_pu(1,1)*Q_pu(2,2));
+Q_pu(2,1) = Q_pu(1,2)
 
 %% Dibujos
-texto_variables = ["v^2 (m^2/s^2)", "v^2·\omega^2 (m^2·rad/s^4)", "\omega^2 (rad^2/s^2)"];
-texto_odometria = ["Var(\Delta)x (m^2)", "Var(\Delta)y (m^2)", "Var(\Delta\theta^2) (rad^2)"];
+texto_variables = ["v^2 (m^2/s^2)", "v^2·\omega^2 (m^2·rad^2/s^4)", "\omega^2 (rad^2/s^2)"];
+texto_odometria = ["Var(\Delta x) (m^2)", "Var(\Delta y) (m^2)", "Var(\Delta\theta) (rad^2)"];
 
 for i = 1:3
     figure(i);
@@ -120,6 +124,13 @@ for i = 1:3
     ylabel(texto_odometria(i));
 end
 
+figure(4);
+hold on
+plot(sqrt(variables(:, 1).*variables(:, 2)), cov_odometria(:), '.k', 'LineWidth', 1.5);
+plot([0 1], [0 Q_pu(1, 2)], '-r', 'LineWidth', 1.5);
+xlabel(num2str(i) + " - " + num2str(j))
+xlabel("v^2·|\omega| (m^2·rad/s^3)");
+ylabel("Cov(\Delta x, \Delta y) (m^2)");
 save calibracion_odometria Q_pu
 
 

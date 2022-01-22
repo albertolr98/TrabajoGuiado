@@ -73,6 +73,11 @@ classdef sensor_us < sensor
             x_rel = obj.X_rel(1);
             y_rel = obj.X_rel(2);
             theta_rel = obj.X_rel(3);
+
+            theta = theta_abs - theta_rel;
+            dx_dtheta = -x_rel*sin(theta) - y_rel*cos(theta);
+            dy_dtheta = x_rel*cos(theta) - y_rel*sin(theta);
+
             
             delta = obj.angulo_cono;
             
@@ -92,12 +97,12 @@ classdef sensor_us < sensor
                         X_m = new_X_m;
                         
                         % Jacobiano
-                        dx = 0;
-                        dy = -1/sin(theta_abs + delta);
-                        dtheta = 1/sin(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
+                        dz_dx = 0;
+                        dz_dy = -1/sin(theta_abs + delta);
+                        dz_dtheta = 1/sin(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
                             y_rel*cos(theta_rel + delta) + (y_abs - X_m(2))*cos(theta_abs + delta));
                         
-                        H = [dx dy dtheta];
+                        H = [dz_dx dz_dy dz_dtheta];
                     end
                     
                     % ángulo extremo del cono 2
@@ -107,12 +112,12 @@ classdef sensor_us < sensor
                         X_m = new_X_m;
                         
                         % Jacobiano
-                        dx = 0;
-                        dy = -1/sin(theta_abs - delta);
-                        dtheta = 1/sin(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
+                        dz_dx = 0;
+                        dz_dy = -1/sin(theta_abs - delta);
+                        dz_dtheta = 1/sin(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
                             y_rel*cos(theta_rel - delta) + (y_abs - X_m(2))*cos(theta_abs - delta));
                         
-                        H = [dx dy dtheta];
+                        H = [dz_dx dz_dy dz_dtheta];
                     end
                     
                     % perpendicular 1
@@ -123,10 +128,10 @@ classdef sensor_us < sensor
                             X_m = new_X_m;
                             
                             % Jacobiano
-                            dx = 0;
-                            dy = -1;
-                            dtheta = -(x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
-                            H = [dx dy dtheta];
+                            dz_dx = 0;
+                            dz_dy = -1;
+                            dz_dtheta = -(x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
+                            H = [dz_dx dz_dy dz_dtheta];
                         end
                     end
                     
@@ -138,10 +143,10 @@ classdef sensor_us < sensor
                             X_m = new_X_m;
 
                             % Jacobiano
-                            dx = 0;
-                            dy = 1;
-                            dtheta = (x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
-                            H = [dx dy dtheta];                            
+                            dz_dx = 0;
+                            dz_dy = 1;
+                            dz_dtheta = (x_rel*sin(theta_abs) + y_rel*cos(theta_abs));
+                            H = [dz_dx dz_dy dz_dtheta];                            
                         end
                     end
                 
@@ -154,12 +159,12 @@ classdef sensor_us < sensor
                         X_m = new_X_m;
                         
                         % Jacobiano
-                        dx = -1/cos(theta_abs + delta);
-                        dy = 0;
-                        dtheta = 1/cos(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
+                        dz_dx = -1/cos(theta_abs + delta);
+                        dz_dy = 0;
+                        dz_dtheta = 1/cos(theta_abs + delta)^2*(-x_rel*sin(theta_rel + delta) + ...
                             y_rel*cos(theta_rel + delta) - (x_abs - X_m(1))*sin(theta_abs + delta));
                         
-                        H = [dx dy dtheta];
+                        H = [dz_dx dz_dy dz_dtheta];
                     end
                     
                     % ángulo extremo del cono 2
@@ -169,12 +174,12 @@ classdef sensor_us < sensor
                         X_m = new_X_m;
                         
                         % Jacobiano
-                        dx = -1/cos(theta_abs - delta);
-                        dy = 0;
-                        dtheta = 1/cos(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
+                        dz_dx = -1/cos(theta_abs - delta);
+                        dz_dy = 0;
+                        dz_dtheta = 1/cos(theta_abs - delta)^2*(-x_rel*sin(theta_rel - delta) + ...
                             y_rel*cos(theta_rel - delta) - (x_abs - X_m(1))*sin(theta_abs - delta));
                         
-                        H = [dx dy dtheta];
+                        H = [dz_dx dz_dy dz_dtheta];
                     end
                     
                     % perpendicular 1
@@ -185,10 +190,10 @@ classdef sensor_us < sensor
                             X_m = new_X_m;
                             
                             % Jacobiano
-                            dx = -1;
-                            dy = 0;
-                            dtheta = -(x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
-                            H = [dx dy dtheta];
+                            dz_dx = -1;
+                            dz_dy = 0;
+                            dz_dtheta = -(x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
+                            H = [dz_dx dz_dy dz_dtheta];
                         end
                     end
                     
@@ -200,10 +205,10 @@ classdef sensor_us < sensor
                             X_m = new_X_m;
                             
                             % Jacobiano
-                            dx = 1;
-                            dy = 0;
-                            dtheta = (x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
-                            H = [dx dy dtheta];
+                            dz_dx = 1;
+                            dz_dy = 0;
+                            dz_dtheta = (x_rel*cos(theta_abs) - y_rel*sin(theta_abs));
+                            H = [dz_dx dz_dy dz_dtheta];
                         end
                     end
                 end
@@ -217,13 +222,12 @@ classdef sensor_us < sensor
                     if new_z < z
                         z = new_z;
                         X_m = [x_p y_p];
-                        
+
                         % Jacobiano
-                        dx = (x_abs - x_p)/z;
-                        dy = (y_abs - y_p)/z;
-                        dtheta = 1/z*((x_abs - x_p)*(-x_rel*sin(theta_abs) - y_rel*cos(theta_abs)) + ...
-                            (y_abs - y_p)*(x_rel*cos(theta_abs) - y_rel*sin(theta_abs)));
-                        H = [dx dy dtheta];
+                        dz_dx = (x_abs - x_p)/z;
+                        dz_dy = (y_abs - y_p)/z;
+                        dz_dtheta = dz_dx*dx_dtheta + dz_dy*dy_dtheta;
+                        H = [dz_dx dz_dy dz_dtheta];
 
                     end
                 end
@@ -239,11 +243,10 @@ classdef sensor_us < sensor
                         X_m = [x_p y_p];
                         
                         % Jacobiano
-                        dx = (x_abs - x_p)/z;
-                        dy = (y_abs - y_p)/z;
-                        dtheta = 1/z*((x_abs - x_p)*(-x_rel*sin(theta_abs) - y_rel*cos(theta_abs)) + ...
-                            (y_abs - y_p)*(x_rel*cos(theta_abs) - y_rel*sin(theta_abs)));
-                        H = [dx dy dtheta];
+                        dz_dx = (x_abs - x_p)/z;
+                        dz_dy = (y_abs - y_p)/z;
+                        dz_dtheta = dz_dx*dx_dtheta + dz_dy*dy_dtheta;
+                        H = [dz_dx dz_dy dz_dtheta];
 
                     end
                 end
