@@ -7,7 +7,7 @@ clc
 global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
 
 %% Variables
-iteraciones = 100000;
+iteraciones = 30000;
 variables_globales
 
 %% Contrucción del entorno
@@ -19,8 +19,8 @@ load construccion_entorno_robot
 start_pos = [1; 1; pi/2];
 trayectoria = [start_pos';
                 6,13,0;
-                start_pos';
-                6,6,0];
+                 start_pos';
+                 6,6,0];
 
 bot = bot.actualizar_posicion(start_pos); % bot es una objeto del tipo "robot"
 
@@ -52,8 +52,11 @@ control_orientacion = 0;
 orientacion_choque = 0;
 reached = 0;
 counter = 0;
+reactivo = 0;
+modo = 0;
+derecha = 0;
 % n_fases = 0;
-
+nu = [0,0,0,0,0];
 % Posicionamiento del robot
 apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
 apoloResetOdometry(robot_name,[0,0,0]);
@@ -106,51 +109,53 @@ while i< iteraciones && fase<=n_fases
     if fase == n_fases
         control_orientacion = 1;
     end
-
-    if choque == 1
-        [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
     
+    modo = Piloto(modo);
+    %disp(modo)
+    if modo == 1 && reactivo == 0
+        [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
+        counter = 0;
     else
-        [v,w,counter,reached] = ControllerReactive(ref_pos(:,fase),X_estimada,counter,orientacion_choque);
         
+        [v,w,counter,reached,derecha] = ControllerReactive(ref_pos(:,fase),X_estimada,counter,orientacion_choque,derecha);
         counter = counter + 1;
+        reactivo = 1;
+        disp(counter)
+        v
+        w
+          
+    end
+
+    if counter>0 && reached == 1
+        reactivo = 0;
     end
     % solo para hacer comparaciones
     X_real = apoloGetLocationMRobot(robot_name);
     
     % Recogemos en un array las variables para hacer un plot
-    v_array = [v_array; v]; %#ok<*AGROW> 
+    v_array = [v_array; v]; 
     w_array = [w_array; w];
     mode_array = [mode_array; mode];
     reached_array = [reached_array; reached];
     X_estimada_array = [X_estimada_array, X_estimada];
     X_real_array = [X_real_array, [X_real(1); X_real(2); X_real(4)]];
         
+
     %% Movimiento Robot
-    if choque == 1
-        apoloResetOdometry(robot_name, [0 0 0]) 
-        choque = apoloMoveMRobot(robot_name,[v w],0.1);
+    
+    apoloResetOdometry(robot_name, [0 0 0]) 
+    choque = apoloMoveMRobot(robot_name,[v w],0.1);
         
-    else
-        apoloResetOdometry(robot_name, [0 0 0]) 
-        apoloMoveMRobot(robot_name,[v w],0.1);
-        if reached
-            reached = 0;
-            choque = 1;
-            counter = 0;
-            ref_pos(:,fase) = ref_pos(:,fase) + [-0.1;-0.1;0];
-            disp( ref_pos(:,fase))
-        end
-    end 
+    
     
     %% Filtro de Kalman
-    [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
+    [X_estimada, Pk, nu] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
 
     bot = bot.actualizar_posicion(X_estimada);
 
     %% Si completa el objetivo pasa al siguiente
 
-    salto_fases = 1;
+    salto_fases = 3;
 
     if reached
         if fase < (n_fases-salto_fases)

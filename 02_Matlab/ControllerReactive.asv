@@ -1,4 +1,4 @@
-function [v,w,counter,reached] = ControllerReactive(pos_objetivo,pos_robot,counter,orientacion_choque)
+function [v,w,counter,reached, derecha] = ControllerReactive(pos_objetivo,pos_robot,counter,orientacion_choque,nu,derecha)
     %CONTROLLER esta funcion toma la posicion relativa a la cual 
     %debe ir el robot y proporciona v y w para alcanzar el objetivo
     %Como de momento pos_robot es con getLocation tiene la forma [x y z
@@ -30,25 +30,37 @@ function [v,w,counter,reached] = ControllerReactive(pos_objetivo,pos_robot,count
     %centrarse en lo que aún no funciona
     
     medidas_us = GetUltrasonicSensorsWithNoise('Marvin');
-    disp(' ')
-    sensor_izq = medidas_us(2)
-    sensor_derecho = medidas_us(5)
-    sensor_frontal = medidas_us(1)
-    sensor_izq_trasero = medidas_us(3)
-    sensor_der_trasero = medidas_us(4)
+   
+    sensor_izq = medidas_us(2);
+    sensor_derecho = medidas_us(5);
+    sensor_frontal = medidas_us(1);
+    sensor_izq_trasero = medidas_us(3);
+    sensor_der_trasero = medidas_us(4);
 
     %Correccion angulo
-      v = -0.2 + (0.4).*rand(1,1);
-      w = -0.4 + (0.4).*rand(1,1);
+%       v = -0.1;
+%       w = -0.2 + (0.4).*rand(1,1);
+
+%       if  sensor_frontal >0.5
+%           v = 0.05;
+%           w = 0.2;
+%       elseif sensor_frontal >0.5
+%           v = 0.05;
+%           w = -0.2;
+%       else
+%         v = 0;
+%         w = -0.4 + (0.4).*rand(1,1);
+%       end
+
 %     if sensor_frontal < 0.5
-%         v = -0.5
-%         w = -0.1 + (0.2).*rand(1,1)
+%         v = -0.1;
+%         w = -0.1 + (0.2).*rand(1,1);
 %     elseif (sensor_izq > sensor_derecho) && (sensor_frontal < 2)
-%         v = 0
-%         w = -0.2
+%         v = 0;
+%         w = -0.2;
 %     elseif (sensor_izq < sensor_derecho) && (sensor_frontal < 2) 
-%         v = 0
-%         w = 0.2
+%         v = 0;
+%         w = 0.2;
 %     elseif (sensor_frontal > 2)
 %         v = 0.1;
 %         w = 0;
@@ -57,11 +69,30 @@ function [v,w,counter,reached] = ControllerReactive(pos_objetivo,pos_robot,count
 %         w = -0.1 + (0.2).*rand(1,1);
 %  
 %     end
-    
-    reached = 0;
-    if counter > 10
-        reached  = 1
+reached = 0;
+if counter == 0:
+    if(sensor_izq<sensor_derecho)
+        derecha = 1;
     end
+else if counter < 50
+    v=-0.1;
+    w=0;
+elseif counter < 150
+    v = 0;
+    if(derecha)
+    w = 0.1;
+elseif counter< 200
+    v = 0.1;
+    w = 0;
+else
+    reached = 1;
+    v = 0;
+    w = 0;
+end
+    
+%     if counter > 10
+%         reached  = 1;
+%     end
 
 end
 
