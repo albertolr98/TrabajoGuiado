@@ -139,67 +139,6 @@
 		<colour r="0.2" g="0.2" b="0.8"/>
 	</face>
 </FaceSetPart>
-
-<FaceSetPart name="SalitaDePruebas">
-	<face>
-		<vertex>
-			{-1.000000 , 0.000000, 0}
-			{-20.400000 , 0.000000, 0}
-			{-20.4000000 , 19.400000, 0}
-			{-1.000000 , 19.400000, 0}
-		</vertex>
-		<colour r="0.2" g="0" b="0"/>
-	</face>
-	
-	<face>
-		<vertex>
-			{0.000000 , 0.000000, 0}
-			{19.400000 , 0.000000, 0}
-			{19.400000 , 2.000000, 0}
-			{0.000000 , 2.000000, 0}
-		</vertex>
-		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
-		<position>{-1.000000 , 0.000000, 0}</position>
-		<colour r="0.2" g="0" b="0"/>
-	</face>
-	
-	<face>
-		<vertex>
-			{0.000000 , 0.000000, 0}
-			{19.400000 , 0.000000, 0}
-			{19.400000 , 2.000000, 0}
-			{0.000000 , 2.000000, 0}
-		</vertex>
-		<orientation>{1.570796 , 0.000000, 1.570796}</orientation>
-		<position>{-20.4000000 , 0.000000, 0}</position>
-		<colour r="0.2" g="0" b="0"/>
-	</face>
-	
-    <face>
-		<vertex>
-			{1.000000 , 0.000000, 0}
-			{20.400000 , 0.000000, 0}
-			{20.400000 , 2.000000, 0}
-			{1.000000 , 2.000000, 0}
-		</vertex>
-		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
-		<position>{0.000000 , 0.000000, 0}</position>
-		<colour r="0.2" g="0" b="0"/>
-	</face>
-	
-    <face>
-		<vertex>
-			{1.000000 , 0.000000, 0}
-			{20.400000 , 0.000000, 0}
-			{20.400000 , 2.000000, 0}
-			{1.000000 , 2.000000, 0}
-		</vertex>
-		<orientation>{1.570796 , 0.000000, 3.141593}</orientation>
-		<position>{0 , 19.400000, 0}</position>
-		<colour r="0.2" g="0" b="0"/>
-	</face>
-	
-</FaceSetPart>
 <!-- definición de un robot Pioner3at , posicion y orientación inicial-->
     <Pioneer3ATSim name="Marvin">
       <orientation>	{0,0,0} </orientation>
@@ -240,13 +179,46 @@
       <position>	{0.06,-0.19,0.2}	</position>
       <colour r="0" g="1" b="0"/>
     </UltrasonicSensor>
-<!-- definición de 2 balizas-->
+	
+<!-- definición de 10 balizas-->
 	<LandMark  name ="LM1" mark_id="1">
-		  <position> {-3.9,3.9,0.2}	</position>
+		  <position> {7.8,2.3,0.2}	</position>
 	</LandMark>
 	
 	<LandMark  name = "LM2" mark_id="2">
-		  <position> {3.9,3.9,0.2} </position>
+		  <position> {7.8,5.7,0.2} </position>
+	</LandMark>
+	
+	<LandMark  name = "LM3" mark_id="3">
+		  <position> {7.8,8.4,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM4" mark_id="4">
+		  <position> {7.8,12.3,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM5" mark_id="5">
+		  <position> {7.8,16.3,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM6" mark_id="6">
+		  <position> {1.4,14.6,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM7" mark_id="7">
+		  <position> {1.4,10,0.2} </position>
+	</LandMark>
+	
+	<LandMark  name = "LM8" mark_id="8">
+		  <position> {2,8.6,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM9" mark_id="9">
+		  <position> {2,6.4,0.2} </position>
+	</LandMark>
+
+	<LandMark  name = "LM10" mark_id="10">
+		  <position> {2,4.6,0.2} </position>
 	</LandMark>
   </World>
 </root>

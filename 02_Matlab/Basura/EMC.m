@@ -40,7 +40,7 @@ for j = 1:it
     end
 
     %% Matrices acumuladas
-    R_acumulado = blkdiag(R_acumulado, R); %#ok<*AGROW> 
+    R_acumulado = blkdiag(R_acumulado, R);
     H_acumulado = [H_acumulado; Hk];
     Z_acumulado = [Z_acumulado; Z_k];
 end
