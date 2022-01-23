@@ -8,3 +8,8 @@ Integrantes del grupo:
  -Alberto López Rodríguez
  
  -Pablo García Peris
+
+Los links importantes son:
+ - Video demostración: https://youtu.be/qidVsR9CFnE
+
+ - Github: https://github.com/albertolr98/TrabajoGuiado

@@ -1,7 +1,7 @@
 function [modo] = Piloto(choque)
     %PILOTO Si ve que hay un obstaculo cerca activa modo reactivo
     % Modo 1 -> modo normal
-    % Modo 2 -> reactivo
+    % Modo 2 -> reactivo 
 
     % Recogida medidas de los sensoressensores 
     medidas_us = GetUltrasonicSensorsWithNoise('Marvin');
