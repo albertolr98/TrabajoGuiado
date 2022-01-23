@@ -31,14 +31,14 @@ if counter == 0
 else if counter < 50
     v=-0.1;
     w=0;
-elseif counter < 200
+elseif counter < 175
     v = 0;
     if(derecha)
         w = -0.1;
     else
         w = 0.1;
     end
-elseif counter< 250
+elseif counter< 240
     v = 0.1;
     w = 0;
 else

@@ -18,9 +18,9 @@ load construccion_entorno_robot
 %% Inicialización
 start_pos = [1; 1; pi/2];
 trayectoria = [start_pos';
-                6,13,0;
-                 start_pos';
-                 6,6,0];
+                6,2,0;
+                 6,13,0;
+                 6,18,0];
 
 bot = bot.actualizar_posicion(start_pos); % bot es una objeto del tipo "robot"
 
@@ -107,6 +107,7 @@ while i< iteraciones && fase<=n_fases
     if counter>0 && reached == 1
         reactivo = 0;
         reached = 0;
+        fase = fase +1;
     end
     % solo para hacer comparaciones
     X_real = apoloGetLocationMRobot(robot_name);
