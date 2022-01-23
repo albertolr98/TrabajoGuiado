@@ -81,11 +81,7 @@ planner = plannerRRTStar(ss,sv);   % Se puede cambiar a plannerRRT(ss,sv);
 planner.MaxConnectionDistance = 3; % Si incrementamos este valor explora más
                                    % si es pequeño a veces no encuentra
                                    % solucion
-planner.ContinueAfterGoalReached = true;
-
-
-% Principio y meta. Adecuados a la resolucion.                                   
-
+planner.ContinueAfterGoalReached = true;                              
 
 
 % Planificador planificando
@@ -95,8 +91,10 @@ planner.ContinueAfterGoalReached = true;
 figure();
 map.show; hold on;
 plot(solnInfo.TreeData(:,1),solnInfo.TreeData(:,2),'b.-');       % arbol
-plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2) % path
+plot(pthObj.States(:,1), pthObj.States(:,2),'r-','LineWidth',2)  % path
 
+
+% Normalización puntos trayectoria
 angles_path = pthObj.States(:,3);
 ref_pos = ((pthObj.States-1/resolucion)*resolucion);
 ref_pos(:,3)= wrapToPi(angles_path);
