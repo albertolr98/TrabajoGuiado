@@ -4,10 +4,16 @@
 clearvars
 clc
 
-global time_unit robot_name nbalizas %#ok<*GVMIS,*NUSED>
+global time_unit robot_name nbalizas
+
+
+%% Advertencia!
+% Es necesario abrir el simulador Apolo con cualquiera de los dos
+% mapas siguientes:
+%   1.
 
 %% Variables
-iteraciones = 30000;
+iteraciones = 30000; % Para evitar que sea un bucle infinito
 variables_globales
 
 %% Contrucción del entorno
@@ -16,32 +22,26 @@ load construccion_entorno_robot
 
 
 %% Inicialización
-start_pos = [1; 1; pi/2];
-trayectoria = [start_pos';
-                6,2,0;
-                 6,13,0;
-                 6,18,0];
+% Cambiar puntos de la trayectoria para cambiar la navegación
+trayectoria = [1, 1, pi/2; %START POS
+               6,13,0;
+               1, 1, pi/2;
+               6,6,0];
 
-bot = bot.actualizar_posicion(start_pos); % bot es una objeto del tipo "robot"
 
-% [X_estimada, Pk] = EMC(bot, en, 1); % 100 iteraciones, "en" es una objeto del tipo entorno
-% 
-% for i = 1:100
-%     [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [0 0], bot, en);
-% 
-%     bot = bot.actualizar_posicion(X_estimada);
-% end
+bot = bot.actualizar_posicion(trayectoria(1,:)'); % bot es una objeto del tipo "robot"
 
+%Inicializacion Pk
 Pk = diag(ones(1,3))*0.001;
 
 % Posición inicial y arrays para guardar las posiciones reales y estimadas
-X_estimada = start_pos;
+X_estimada = trayectoria(1,:)';
 X_estimada_array = X_estimada;
-X_real_array = start_pos;
+X_real_array = trayectoria(1,:)';
 
+
+% Inicializacion arrays para dibujos y funciones
 fase = 1;
-
-% Inicializacion arrays para plotear
 v_array = 0;
 w_array = 0;
 reached_array = 0;
@@ -55,18 +55,16 @@ counter = 0;
 reactivo = 0;
 modo = 0;
 derecha = 0;
-% n_fases = 0;
-nu = [0,0,0,0,0];
-% Posicionamiento del robot
-apoloPlaceMRobot(robot_name,[start_pos(1) start_pos(2) 0], start_pos(3));    
+au = 1; % variable para no hacer apoloUpdate todo el rato
+
+
+%% Posicionamiento inicial del robot
+apoloPlaceMRobot(robot_name,[trayectoria(1,1) trayectoria(1,2) 0], trayectoria(1,3));    
 apoloResetOdometry(robot_name,[0,0,0]);
 apoloUpdate();
 
-au = 1; % variable para no hacer apoloUpdate todo el rato
 
 %% Planificacion
-% inflacion = 0.5;
-%resolucion = 0.1;
 inflacion = 0.5;
 resolucion = 0.1;
 ref_pos = trayectoria(1,:)';
@@ -90,8 +88,12 @@ while i< iteraciones && fase<=n_fases
     if fase == n_fases
         control_orientacion = 1;
     end
+
+
     %% Piloto
     modo = Piloto(choque);
+
+
     %% Controlador
     if modo == 1 && reactivo == 0
         [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,reached,control_orientacion);
@@ -107,9 +109,10 @@ while i< iteraciones && fase<=n_fases
     if counter>0 && reached == 1
         reactivo = 0;
         reached = 0;
-        fase =
+        fase = fase +1;
     end
-    % solo para hacer comparaciones
+
+    % solo para hacer comparaciones y graficar
     X_real = apoloGetLocationMRobot(robot_name);
     
     % Recogemos en un array las variables para hacer un plot
@@ -129,9 +132,10 @@ while i< iteraciones && fase<=n_fases
     
     
     %% Filtro de Kalman
-    [X_estimada, Pk, nu] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
+    [X_estimada, Pk] = KalmanFilter(X_estimada, Pk, [v w], bot, en);
 
     bot = bot.actualizar_posicion(X_estimada);
+
 
     %% Si completa el objetivo pasa al siguiente
 
@@ -150,7 +154,7 @@ while i< iteraciones && fase<=n_fases
     i = i + 1;
     
 
-    % Hace apolo update solo cada 2 iteraciones
+    %% Hace apolo update solo cada 2 iteraciones
     if au == 1
         apoloUpdate();
         au = au +1;
@@ -184,7 +188,6 @@ subplot(2,2,4);
 plot(t,reached_array, 'b-');
 title("Reached target");
 
-%%
 figure("Name", "Posicion 2d");
 hold on
 plot(X_estimada_array(1,:),X_estimada_array(2,:),'b-');
@@ -197,5 +200,3 @@ ylim([0 20]);
 
 title("Trayectoria 2d");
 
-
-% apoloGetLocationMRobot(robot_name)

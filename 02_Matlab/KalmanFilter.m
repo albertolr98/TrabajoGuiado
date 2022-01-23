@@ -1,4 +1,4 @@
-function [X_k1_k1, P_k1_k1,nu] = KalmanFilter(X_k_k, P_k_k, v, robot, entorno)
+function [X_k1_k1, P_k1_k1] = KalmanFilter(X_k_k, P_k_k, v, robot, entorno)
 %[X_k1_k1, P_k1_k1] = KALMANFILTER(X_k_k, P_k_k, v, robot, entorno)
 % Esta función realiza el filtro de Kalman sobre las medidas
 % tomadas a través de los sensores del robot para la corrección de la
