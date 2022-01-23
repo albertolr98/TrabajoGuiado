@@ -70,64 +70,43 @@ resolucion = 0.1;
 
 
 ref_pos = trayectoria(1,:)';
+
+%% Calculo trayectoria 
 for i = 1:size(trayectoria,1)-1
-    %while n_fases == 0
-        ref_pos_i = Planner(trayectoria(i,:),trayectoria(i+1,:),resolucion,inflacion, en);
-%         disp(ref_pos_i)
-        %n_fases = size(ref_pos_i, 2);
-   % end
+    ref_pos_i = Planner(trayectoria(i,:),trayectoria(i+1,:),resolucion,inflacion, en);
+    
+    % Almacenamos la trayectoria total
     ref_pos = [ref_pos,ref_pos_i];
 
 end
 n_fases = size(ref_pos, 2);
 
-%% Posiciones objetivo
-% ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
-%             4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
-%             0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
 
-% ref_pos =  repmat([-5 -15 -15 -5 ;
-%             15 15 5 5 ;
-%             0 -pi/2 pi pi/2], 1, 30);
-% 
-% n_fases = size(ref_pos, 2);
-
-
-
-%% Posiciones objetivo
-% ref_pos =  [1.0000 7.0000 7.0000 3.0000 3.0000 1.0000 1.0000 7.0000 1.0000 0.7500 0.7500 3.5000;
-%             4.0000 4.0000 1.0000 1.0000 4.0000 4.0000 5.7500 5.7500 5.7500 10.000 15.000 17.5000;
-%             0.0000 -pi/2  pi     pi/2   pi     pi     0      pi     pi/2   pi/2   pi/2   0   ];
-% 
-% n_fases = size(ref_pos, 2);
-
-%% Bucle como tal
+%% Bucle principal
 i = 0;
 
 while i< iteraciones && fase<=n_fases  
-    %% Controlador
+
     if fase == n_fases
         control_orientacion = 1;
     end
-    
-    modo = Piloto(modo);
-    %disp(modo)
+    %% Piloto
+    modo = Piloto(choque);
+    %% Controlador
     if modo == 1 && reactivo == 0
-        [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,choque,reached,control_orientacion);
+        [v,w,mode,reached] = Controller(ref_pos(:,fase),X_estimada,mode,reached,control_orientacion);
         counter = 0;
     else
         
         [v,w,counter,reached,derecha] = ControllerReactive(ref_pos(:,fase),X_estimada,counter,orientacion_choque,derecha);
         counter = counter + 1;
-        reactivo = 1;
-        disp(counter)
-        v
-        w
-          
+        reactivo = 1;          
     end
-
+    
+    %Para desactivar el control reactivo
     if counter>0 && reached == 1
         reactivo = 0;
+        reached = 0;
     end
     % solo para hacer comparaciones
     X_real = apoloGetLocationMRobot(robot_name);

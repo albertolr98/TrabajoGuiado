@@ -1,11 +1,8 @@
-function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reached,control_orientacion)
+function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,reached,control_orientacion)
     %CONTROLLER esta funcion toma la posicion relativa a la cual 
     %debe ir el robot y proporciona v y w para alcanzar el objetivo
-    %Como de momento pos_robot es con getLocation tiene la forma [x y z
-    %theta]
     
-%     tol_giro = 0.05;
-%     tol_distancia = 0.01;
+    % Tolerancias
     tol_giro = 0.1;
     tol_distancia = 0.1;
 
@@ -23,11 +20,9 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
     %Una vez llega a la posicion se reorienta 
 
     orientation_dif = wrapToPi(pos_objetivo(3)-angle_robot);
-    %orientation_dif = 0;
 
-    %El tipo de control que he implementado es un proporcional bastante
-    %cutre pero funciona, se puede mejorar pero creo que es más interesante
-    %centrarse en lo que aún no funciona
+
+    %El tipo de control implementado es un control proporcional 
     
   
     %Correccion angulo
@@ -39,8 +34,7 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
         %realimentarlo y tal
         
         mode = 1;
-        w = angle_dif/pi *3;%* 0.2;  %Valor entre 0-1 por eso divido entre pi
-                       %Dado que el maximo error va a ser pi radianes
+        w = angle_dif/pi *3;
         v = 0;
         reached = 0;
     
@@ -53,14 +47,12 @@ function [v,w,mode,reached] = Controller(pos_objetivo,pos_robot,mode,choque,reac
     
     %Correccion orientacion
     elseif abs(orientation_dif)>tol_giro && (control_orientacion == 1)
-        if mode~=3
-            disp("MODO3")
-        end
          mode = 3;
          v = 0;
          w = orientation_dif/pi;
          reached = 0;
-    %aparcao
+
+    %Se ha llegado al objetivo
     else
          mode = 4;
          v = 0;
