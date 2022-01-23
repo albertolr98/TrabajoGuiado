@@ -65,10 +65,10 @@ apoloUpdate();
 au = 1; % variable para no hacer apoloUpdate todo el rato
 
 %% Planificacion
+% inflacion = 0.5;
+%resolucion = 0.1;
 inflacion = 0.5;
 resolucion = 0.1;
-
-
 ref_pos = trayectoria(1,:)';
 
 %% Calculo trayectoria 

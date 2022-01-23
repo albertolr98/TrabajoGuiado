@@ -174,17 +174,17 @@
 		</FaceSetPart>
 		<Pioneer3ATSim name="Marvin" id="2">
 			<orientation>
-				{0,-0,0.102234}
+				{0,-0,0.0558579}
 			</orientation>
 			<position>
-				{5.98811,5.94139,0}
+				{5.92158,5.98651,0}
 			</position>
-			<odometry seconds="1642855928" microseconds="586000">
+			<odometry seconds="1642933840" microseconds="386000">
 				<orientation>
-					{0,-0,1.68059}
+					{0,-0,2.64095}
 				</orientation>
 				<position>
-					{-82.7519,-81.3749,0}
+					{-99.1878,-84.6587,0}
 				</position>
 			</odometry>
 		</Pioneer3ATSim>
@@ -287,11 +287,8 @@
 			</position>
 		</LandMark>
 		<PrismaticPart name="Obstaculo" id="19">
-			<orientation>
-				{0,0,0.816814}
-			</orientation>
 			<position>
-				{1.4,7.8,0}
+				{2,7.8,0}
 			</position>
 			<colour r="1" g="0" b="0"/>
 			<face>
